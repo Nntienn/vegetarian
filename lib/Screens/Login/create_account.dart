@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
+import 'package:vegetarian/Screens/Login/verify_account.dart';
 import 'package:vegetarian/blocs/login_blocs.dart';
 import 'package:vegetarian/blocs/register_blocs.dart';
+import 'package:vegetarian/blocs/verify_account_bloc.dart';
 import 'package:vegetarian/events/login_events.dart';
 import 'package:vegetarian/events/register_events.dart';
+import 'package:vegetarian/events/verify_account_event.dart';
 import 'package:vegetarian/states/register_states.dart';
 
 import 'login_screen.dart';
@@ -255,8 +258,8 @@ class _CreateAccountState extends State<CreateAccount> {
                   MaterialPageRoute(
                       builder: (context) => BlocProvider(
                             create: (context) =>
-                                LoginBloc()..add(LoginFetchEvent()),
-                            child: LoginScreen(),
+                                VerifyBloc()..add(VerifyFetchEvent()),
+                            child: VerifyScreen(),
                           )));
             }
             if (state is RegisterStateFailure) {

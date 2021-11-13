@@ -16,7 +16,7 @@ class ProfileUpdateEvent extends ProfileBloc {
   final String country;
   final String facebookLink;
   final String instagramLink;
-  final String birthdate;
+  final DateTime birthdate;
   final String gender;
 
   ProfileUpdateEvent(this.aboutMe,

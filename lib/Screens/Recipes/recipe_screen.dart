@@ -7,6 +7,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 
 import 'package:vegetarian/blocs/recipe_blocs.dart';
 import 'package:vegetarian/constants/constants.dart';
@@ -73,6 +75,30 @@ class _ProfileState extends State<RecipeScreen> {
                 );
               }
               if (state is RecipeStateSuccess) {
+                String listIngredient = "";
+                String listStep = "";
+                for (int i = 0; i < state.recipe.steps.length; i++) {
+                  listStep = listStep +
+                      '<h2> Step ' +
+                      (state.recipe.steps[i].stepIndex + 1).toString() +
+                      '</h2>' +
+                      '<p>'+state.recipe.steps[i].stepContent+'</p>';
+                }
+                ;
+                for (int i = 0; i < state.recipe.ingredients.length; i++) {
+                  if (i == state.recipe.ingredients.length - 1) {
+                    listIngredient = listIngredient +
+                        state.recipe.ingredients[i].amountInMg.toString() +
+                        "Mg " +
+                        state.recipe.ingredients[i].ingredientName;
+                  } else {
+                    listIngredient = listIngredient +
+                        state.recipe.ingredients[i].amountInMg.toString() +
+                        "Mg " +
+                        state.recipe.ingredients[i].ingredientName +
+                        ", ";
+                  }
+                }
                 return Container(
                   height: MediaQuery.of(context).size.height,
                   // padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
@@ -102,12 +128,54 @@ class _ProfileState extends State<RecipeScreen> {
                         alignment: Alignment.bottomLeft,
                         height: MediaQuery.of(context).size.height * 0.2,
                         padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
-                        child: Text(
-                          state.recipe.recipeTitle,
-                          style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width * 0.75,
+                                  child: Text(
+                                    state.recipe.recipeTitle,
+                                    style: TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                                Text("Time Created: "+
+                                  DateFormat('dd-MM-yyyy').format(state.recipe.timeCreated),
+                                  style: TextStyle(fontStyle: FontStyle.italic,color: Colors.white),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(state.recipe.totalLike.toString(),
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
+                                IconButton(
+                                    onPressed: () {
+                                      _recipeBloc.add(
+                                          RecipeLikeEvent(state.recipe.recipeId));
+                                    },
+                                    icon: state.isLiked == true
+                                        ? Icon(
+                                      FontAwesomeIcons.solidHeart,
+                                      color: Colors.red,
+                                    )
+                                        : Icon(
+                                      FontAwesomeIcons.heart,
+                                      color: Colors.white,
+                                    ))
+                              ],
+                            ),
+
+                          ],
                         ),
                       )
                     ]),
@@ -157,6 +225,18 @@ class _ProfileState extends State<RecipeScreen> {
                                 "Minutes",
                             style: TextStyle(fontStyle: FontStyle.italic),
                           ),
+                          Text(
+                            'Recipe: ' + listIngredient,
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          ),
+                          Text(
+                            'Nutrition: ',
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          ),
+                          state.recipe.nutrition.calories != 0.0 ? Text(' - Calories: ' + state.recipe.nutrition.calories.toString()): SizedBox(height: 0,),
+                          state.recipe.nutrition.protein != 0.0 ? Text(' - Protein: ' + state.recipe.nutrition.protein.toString()): SizedBox(height: 0,),
+                          state.recipe.nutrition.fat != 0.0 ? Text(' - Fat: ' + state.recipe.nutrition.fat.toString()): SizedBox(height: 0,),
+                          state.recipe.nutrition.carb != 0.0 ? Text(' - Carb: ' + state.recipe.nutrition.carb.toString()): SizedBox(height: 0,),
                           SizedBox(height: screenSize.height / 50),
                           Container(
                             height: 2.0,
@@ -164,11 +244,9 @@ class _ProfileState extends State<RecipeScreen> {
                             margin: EdgeInsets.only(top: 10, bottom: 10),
                           ),
                           Container(
-                              height: MediaQuery.of(context).size.height * 0.40,
-                              child: SingleChildScrollView(
-                                child: Html(
-                                  data: state.recipe.recipeContent,
-                                ),
+                              // height: MediaQuery.of(context).size.height * 0.40,
+                              child: Html(
+                                data: listStep,
                               )),
                         ],
                       ),
@@ -187,6 +265,7 @@ class _ProfileState extends State<RecipeScreen> {
                           _comments.text = value;
                           _recipeBloc.add(RecipeCommentEvent(
                               _comments.text, state.recipe.recipeId));
+                          _comments.text = '';
                         },
                         decoration: InputDecoration.collapsed(
                           hintText: "Comment",
@@ -218,16 +297,35 @@ class _ProfileState extends State<RecipeScreen> {
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 Text(state.comments[index].content),
-                                Container(
-                                  width: 50,
-                                  height: 30,
-                                  child: state.userID ==
-                                          state.comments[index].userId
-                                      ? TextButton(
-                                          onPressed: () {}, child: Text('edit'))
-                                      : TextButton(
-                                          onPressed: () {}, child: Text("")),
-                                )
+                                state.userID == state.comments[index].userId
+                                    ? Row(
+                                        children: [
+                                          Container(
+                                            width: 50,
+                                            height: 30,
+                                            child: TextButton(
+                                                onPressed: () {},
+                                                child: Text('Edit')),
+                                          ),
+                                          Container(
+                                            width: 60,
+                                            height: 30,
+                                            child: TextButton(
+                                                onPressed: () {
+                                                  _recipeBloc.add(
+                                                      RecipeDeleteCommentEvent(
+                                                          state.comments[index]
+                                                              .id,
+                                                          state.recipe
+                                                              .recipeId));
+                                                },
+                                                child: Text('Delete')),
+                                          ),
+                                        ],
+                                      )
+                                    : SizedBox(
+                                        height: 1,
+                                      )
                               ],
                             ),
                           );

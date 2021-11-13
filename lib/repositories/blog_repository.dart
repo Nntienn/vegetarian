@@ -18,7 +18,7 @@ Future<List<BlogsCard>> get10Blogs() async {
       return List.empty();
     }
   } catch (exception) {
-    print(exception.toString());
+    print(exception.toString() +"loi blog");
     return List.empty();
   }
 }

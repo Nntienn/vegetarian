@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">vegetarian</string>
+    <string name="facebook_app_id">437116381266184</string>
+    <string name="fb_login_protocol_scheme">fb437116381266184</string>
+</resources>

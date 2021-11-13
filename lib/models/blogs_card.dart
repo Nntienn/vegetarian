@@ -1,26 +1,39 @@
 // To parse this JSON data, do
 //
-//     final blogs = blogsFromJson(jsonString);
+//     final blogsCard = blogsCardFromJson(jsonString);
 
 import 'dart:convert';
 
 class BlogsCard {
-  String blogTitle;
-  String blogThumbnail;
-  String blogContent;
-  String firstName;
-  String lastName;
-  int blogId;
-  DateTime time;
   BlogsCard({
     required this.blogTitle,
     required this.blogThumbnail,
     required this.blogContent,
     required this.firstName,
     required this.lastName,
+    required this.blogSubtitle,
     required this.blogId,
-    required this.time,
+    required this.totalLike,
+    required this.timeCreated,
+    required this.status,
+    required this.isPrivate,
+    required this.userId,
+    required this.isLike,
   });
+
+  String blogTitle;
+  String blogThumbnail;
+  String blogContent;
+  String firstName;
+  String lastName;
+  String blogSubtitle;
+  int blogId;
+  int totalLike;
+  DateTime timeCreated;
+  int status;
+  bool isPrivate;
+  int userId;
+  bool isLike;
 
   factory BlogsCard.fromRawJson(String str) => BlogsCard.fromJson(json.decode(str));
 
@@ -28,12 +41,18 @@ class BlogsCard {
 
   factory BlogsCard.fromJson(Map<String, dynamic> json) => BlogsCard(
     blogTitle: json["blog_title"],
-    blogThumbnail: json["blog_thumbnail"].toString().length > 20 ? json["blog_thumbnail"] : "https://picsum.photos/536/354",
+    blogThumbnail: json["blog_thumbnail"],
     blogContent: json["blog_content"],
     firstName: json["first_name"],
     lastName: json["last_name"],
+    blogSubtitle: json["blog_subtitle"],
     blogId: json["blog_id"],
-    time: DateTime.parse(json["time"]),
+    totalLike: json["totalLike"],
+    timeCreated: DateTime.parse(json["time_created"]),
+    status: json["status"],
+    isPrivate: json["is_private"],
+    userId: json["user_id"],
+    isLike: json["is_like"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -42,7 +61,13 @@ class BlogsCard {
     "blog_content": blogContent,
     "first_name": firstName,
     "last_name": lastName,
+    "blog_subtitle": blogSubtitle,
     "blog_id": blogId,
-    "time": "${time.year.toString().padLeft(4, '0')}-${time.month.toString().padLeft(2, '0')}-${time.day.toString().padLeft(2, '0')}",
+    "totalLike": totalLike,
+    "time_created": timeCreated.toIso8601String(),
+    "status": status,
+    "is_private": isPrivate,
+    "user_id": userId,
+    "is_like": isLike,
   };
 }

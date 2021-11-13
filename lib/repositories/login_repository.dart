@@ -30,3 +30,34 @@ Future<bool> login(String email, String password) async {
     return false;
   }
 }
+
+Future<bool> googlelogin(
+    String email, String firstName, String lastName) async {
+  try {
+    var params = {
+      "email": email,
+      "first_name": firstName,
+      "last_name": lastName
+    };
+    final response = await http
+        .post(Uri.parse('$GOOGLE_LOGIN'), body: json.encode(params), headers: {
+      HttpHeaders.contentTypeHeader: "application/json",
+    });
+    print(response.statusCode.toString() + "dang nhap google");
+    if (response.statusCode == 200) {
+      // String token = response.body.toString();
+      Map<String, dynamic> parse = jsonDecode(utf8.decode(response.bodyBytes));
+      var userjson = UserJson.fromJson(parse);
+      String token = userjson.token;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('token', token);
+      print(token);
+      return true;
+    } else {
+      return false;
+    }
+  } catch (exception) {
+    print(exception);
+    return false;
+  }
+}

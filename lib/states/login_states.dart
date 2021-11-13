@@ -16,4 +16,7 @@ class LoginStateSuccess extends LoginState {
   // final String lastName;
   // LoginStateSuccess({required this.firstName, required this.lastName});
 }
-class LoginEmptyState extends LoginState{}
+class LoginEmptyState extends LoginState{
+  final String errorMessage;
+  LoginEmptyState({required this.errorMessage});
+}

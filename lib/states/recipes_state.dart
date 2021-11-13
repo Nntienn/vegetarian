@@ -14,6 +14,7 @@ class RecipeStateSuccess extends RecipeState {
   final int userID;
   final List<Comment> comments;
   final Recipe recipe;
-  RecipeStateSuccess(this.recipe, this.comments, this.userID);
+  final bool isLiked;
+  RecipeStateSuccess(this.recipe, this.comments, this.userID, this.isLiked);
 
 }

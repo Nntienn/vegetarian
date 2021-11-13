@@ -120,7 +120,7 @@ class _UserBlogsScreenState extends State<UserBlogsScreen> {
               ),
               Container(
                 decoration: BoxDecoration(color: Colors.white),
-                height: MediaQuery.of(context).size.height * 0.7,
+                height: MediaQuery.of(context).size.height * 0.76,
                 child: BlocBuilder<UserBlogsBloc, UserBlogsState>(
                     builder: (context, state) {
                       if (state is UserBlogsStateSuccess) {

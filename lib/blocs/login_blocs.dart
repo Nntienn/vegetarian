@@ -18,7 +18,9 @@ class LoginBloc extends Bloc<LoginBloc, LoginState> {
     }
     if (event is LoginEvent) {
       if (event.email.trim().isEmpty || event.password.trim().isEmpty) {
-        yield LoginEmptyState();
+        yield LoginEmptyState(
+            errorMessage: 'Empty email or password'
+        );
       } else {
         // try {
         bool isLogin = await login(event.email, event.password);
@@ -35,9 +37,11 @@ class LoginBloc extends Bloc<LoginBloc, LoginState> {
       //   yield LoginStateFailure(errorMessage: 'Incorrect email or password');
       // }
     }else if(event is LoginWithGoogleEvent){
-      final user = await GoogleSignInApi.login();
-      if(user!=null){
-        String? token = user.id;
+      bool isLogin = await  await googlelogin(event.email, event.firstName, event.lastName);
+      if(isLogin){
+        yield LoginStateSuccess();
+      }else{
+        yield LoginStateFailure(errorMessage: 'Incorrect email or password');
       }
     }
   }

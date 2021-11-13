@@ -7,12 +7,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:vegetarian/Screens/UserProfile/profile_menu_screen.dart';
 
 import 'package:vegetarian/blocs/profile_blocs.dart';
-import 'package:vegetarian/blocs/profile_menu_blocs.dart';
 import 'package:vegetarian/events/profile_events.dart';
-import 'package:vegetarian/events/profile_menu_events.dart';
+
 import 'package:vegetarian/states/profile_states.dart';
 
 class Profile extends StatefulWidget {
@@ -80,90 +78,6 @@ class _ProfileState extends State<Profile> {
           filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
         ));
   }
-
-  // Widget _buildProfileImage(String img) {
-  //   return Center(
-  //     child: Container(
-  //       width: 150.0,
-  //       height: 150.0,
-  //       decoration: BoxDecoration(
-  //         image: DecorationImage(
-  //           image: NetworkImage(img),
-  //           fit: BoxFit.cover,
-  //         ),
-  //         borderRadius: BorderRadius.circular(80.0),
-  //         border: Border.all(
-  //           color: Colors.white,
-  //           width: 5.0,
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildProfileImagestate() {
-  //   return BlocBuilder<ProfileBloc, ProfileState>(
-  //     builder: (context, state) {
-  //       if (state is ProfileStateInitial) {
-  //         return _buildProfileImage("assets/disease.png");
-  //       }
-  //       if (state is ProfileStateFailure) {
-  //         return _buildProfileImage("assets/disease.png");
-  //       }
-  //       if (state is ProfileStateSuccess) {
-  //         if (state.user.profileImage.isEmpty) {
-  //           return _buildProfileImage("assets/disease.png");
-  //         }
-  //         return _buildProfileImage("${state.user.profileImage}");
-  //       }
-  //       return _buildProfileImage("assets/disease.png");
-  //     },
-  //   );
-  // }
-
-  // Widget _buildFullName() {
-  //   TextStyle _nameTextStyle = TextStyle(
-  //     fontFamily: 'Roboto',
-  //     color: Colors.black,
-  //     fontSize: 28.0,
-  //     fontWeight: FontWeight.w700,
-  //   );
-  //
-  //   return Container(
-  //     margin: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-  //     child: BlocBuilder<ProfileBloc, ProfileState>(builder: (context, state) {
-  //       if (state is ProfileStateInitial) {
-  //         return CircularProgressIndicator();
-  //       }
-  //       if (state is ProfileStateFailure) {
-  //         return Center(
-  //           child: Container(
-  //             child: Text(
-  //               "...",
-  //               style: _nameTextStyle,
-  //               softWrap: true,
-  //               overflow: TextOverflow.ellipsis,
-  //             ),
-  //           ),
-  //         );
-  //       }
-  //       if (state is ProfileStateSuccess) {
-  //         return Center(
-  //           child: Container(
-  //             child: Text(
-  //               "${state.user.firstName} ${state.user.lastName}",
-  //               style: _nameTextStyle,
-  //               softWrap: true,
-  //               overflow: TextOverflow.ellipsis,
-  //             ),
-  //           ),
-  //         );
-  //       }
-  //       return SizedBox();
-  //     }),
-  //   );
-  // }
-
   Widget _buildStatContainer(String title, String hintValue, bool read,
       TextEditingController editingController) {
     return Container(
@@ -335,7 +249,6 @@ class _ProfileState extends State<Profile> {
                           affinity: TextAffinity.upstream));
                   }
                 }
-
                 ;
                 return Column(
                   children: [
@@ -433,7 +346,7 @@ class _ProfileState extends State<Profile> {
                                           _countryController.text,
                                           _facebookController.text,
                                           _instagramController.text,
-                                          _birthDayController.text,
+                                          DateTime.parse(_birthDayController.text),
                                           gender,
                                           email: _emailController.text,
                                           id: id,

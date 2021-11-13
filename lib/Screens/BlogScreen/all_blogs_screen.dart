@@ -123,7 +123,7 @@ class _AllBlogsScreenState extends State<AllBlogsScreen> {
               ),
               Container(
                 decoration: BoxDecoration(color: Colors.white),
-                height: MediaQuery.of(context).size.height * 0.7652,
+                height: MediaQuery.of(context).size.height * 0.76,
                 child: BlocBuilder<AllBlogsBloc, AllBlogsState>(
                     builder: (context, state) {
                       if (state is AllBlogsStateSuccess) {
@@ -151,7 +151,7 @@ class _AllBlogsScreenState extends State<AllBlogsScreen> {
                                 child: Row(
                                   children: [
                                     Container(
-                                      width: 150.0,
+                                      width: 140.0,
                                       height: 100.0,
                                       decoration: BoxDecoration(
                                         image: DecorationImage(

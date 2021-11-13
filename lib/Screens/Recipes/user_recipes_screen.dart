@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vegetarian/Screens/MainScreen/main_screen.dart';
 import 'package:vegetarian/Screens/Recipes/create_recipe_screen.dart';
+import 'package:vegetarian/Screens/Recipes/edit_recipe_screen.dart';
 import 'package:vegetarian/Screens/Recipes/recipe_screen.dart';
 import 'package:vegetarian/Screens/UserProfile/profile_menu_screen.dart';
 import 'package:vegetarian/blocs/create_recipe_bloc.dart';
+import 'package:vegetarian/blocs/edit_recipe_bloc.dart';
+import 'package:vegetarian/blocs/home_blocs.dart';
 import 'package:vegetarian/blocs/profile_menu_blocs.dart';
 import 'package:vegetarian/blocs/recipe_blocs.dart';
 import 'package:vegetarian/blocs/user_recipes_bloc.dart';
 import 'package:vegetarian/constants/constants.dart';
 import 'package:vegetarian/events/create_recipe_events.dart';
+import 'package:vegetarian/events/edit_recipe_events.dart';
+import 'package:vegetarian/events/home_events.dart';
 import 'package:vegetarian/events/profile_menu_events.dart';
 import 'package:vegetarian/events/recipe_event.dart';
 import 'package:vegetarian/events/user_recipes_events.dart';
@@ -38,14 +44,15 @@ class _UserRecipesScreenState extends State<UserRecipesScreen> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back), onPressed: () { Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BlocProvider(
-                    create: (context) => ProfileMenuBloc()
-                      ..add(ProfileMenuFetchEvent()),
-                    child: ProfileMenuScreen(),
-                  ))); },
+            icon: const Icon(Icons.arrow_back), onPressed: () {
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => BlocProvider(
+              create: (context) =>
+              HomeBloc()..add(HomeFetchEvent()),
+              child: MyHomePage(token: '123',
+              ),
+            )));
+          },
           ),
           title: Text('Your Recipes'),
           actions: <Widget>[
@@ -157,7 +164,7 @@ class _UserRecipesScreenState extends State<UserRecipesScreen> {
               ),
               Container(
                 decoration: BoxDecoration(color: Colors.white),
-                height: MediaQuery.of(context).size.height * 0.7,
+                height: MediaQuery.of(context).size.height * 0.76,
                 child: BlocConsumer<UserRecipesBloc, UserRecipeState>(
                     listener: (context, state) {
                   if (state is UserRecipeDeleteStateSuccess) {
@@ -217,6 +224,21 @@ class _UserRecipesScreenState extends State<UserRecipesScreen> {
                             icon: Icons.delete,
                             onTap: () {
                               showAlertDialog(context, index);
+                            },
+                          ),
+                          IconSlideAction(
+                            caption: 'Edit',
+                            color: Colors.lightGreenAccent,
+                            icon: Icons.edit,
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BlocProvider(
+                                        create: (context) => EditRecipeBloc()
+                                          ..add(EditRecipeFetchEvent(state.recipes[index].recipeId)),
+                                        child: EditRecipeScreen(),
+                                      )));
                             },
                           ),
                         ],

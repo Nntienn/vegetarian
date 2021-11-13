@@ -118,7 +118,7 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
               ),
               Container(
                 decoration: BoxDecoration(color: Colors.white),
-                height: MediaQuery.of(context).size.height * 0.7652,
+                height: MediaQuery.of(context).size.height * 0.76,
                 child: BlocBuilder<AllRecipesBloc, AllRecipesState>(
                     builder: (context, state) {
                       if (state is AllRecipesStateSuccess) {
@@ -146,7 +146,7 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
                                 child: Row(
                                   children: [
                                     Container(
-                                      width: 150.0,
+                                      width: 140.0,
                                       height: 100.0,
                                       decoration: BoxDecoration(
                                         image: DecorationImage(

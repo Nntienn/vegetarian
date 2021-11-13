@@ -1,25 +1,35 @@
 // To parse this JSON data, do
 //
-//     final recipes = recipesFromJson(jsonString);
+//     final recipesCard = recipesCardFromJson(jsonString);
 
 import 'dart:convert';
 
 class RecipesCard {
-
-  String recipeTitle;
-  String recipeThumbnail;
-  String firstName;
-  String lastName;
-  int recipeId;
-
   RecipesCard({
     required this.recipeTitle,
     required this.recipeThumbnail,
     required this.firstName,
     required this.lastName,
     required this.recipeId,
+    required this.totalLike,
+    required this.timeCreated,
+    required  this.status,
+    required this.isPrivate,
+    required this.userId,
+    required this.isLike,
   });
 
+  String recipeTitle;
+  String recipeThumbnail;
+  String firstName;
+  String lastName;
+  int recipeId;
+  int totalLike;
+  DateTime timeCreated;
+  int status;
+  bool isPrivate;
+  int userId;
+  bool isLike;
 
   factory RecipesCard.fromRawJson(String str) => RecipesCard.fromJson(json.decode(str));
 
@@ -27,10 +37,16 @@ class RecipesCard {
 
   factory RecipesCard.fromJson(Map<String, dynamic> json) => RecipesCard(
     recipeTitle: json["recipe_title"],
-    recipeThumbnail: json["recipe_thumbnail"].toString().length > 20 ? json["recipe_thumbnail"] : "https://images.unsplash.com/photo-1599020792689-9fde458e7e17?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8dmVnZXRhcmlhbiUyMGZvb2R8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80&fbclid=IwAR2lbdXG_WZiw2dq25_C3jbMvjJNqBvdpYjWasPupjuhbfbcfd-y8AWs6sI",
+    recipeThumbnail: json["recipe_thumbnail"],
     firstName: json["first_name"],
     lastName: json["last_name"],
     recipeId: json["recipe_id"],
+    totalLike: json["totalLike"],
+    timeCreated: DateTime.parse(json["time_created"]),
+    status: json["status"],
+    isPrivate: json["is_private"],
+    userId: json["user_id"],
+    isLike: json["is_like"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -39,5 +55,11 @@ class RecipesCard {
     "first_name": firstName,
     "last_name": lastName,
     "recipe_id": recipeId,
+    "totalLike": totalLike,
+    "time_created": timeCreated.toIso8601String(),
+    "status": status,
+    "is_private": isPrivate,
+    "user_id": userId,
+    "is_like": isLike,
   };
 }

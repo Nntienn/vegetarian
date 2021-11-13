@@ -13,7 +13,7 @@ class ProfileMenuUpdateEvent extends ProfileMenuBloc{
 }
 
 class ProfileMenuUpdateImageEvent extends ProfileMenuBloc{
-  final File? image;
+  final String image;
   ProfileMenuUpdateImageEvent({required this.image});
 }
 

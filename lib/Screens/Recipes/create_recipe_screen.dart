@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -11,10 +15,13 @@ import 'package:vegetarian/blocs/create_recipe_bloc.dart';
 import 'package:vegetarian/blocs/home_blocs.dart';
 import 'package:vegetarian/events/create_recipe_events.dart';
 import 'package:vegetarian/events/home_events.dart';
+import 'package:vegetarian/models/Ingredient.dart';
 import 'package:vegetarian/models/create_recipe.dart';
-import 'package:vegetarian/models/ingredient.dart';
+
 import 'package:vegetarian/models/category.dart';
+import 'package:vegetarian/models/recipe.dart';
 import 'package:vegetarian/states/create_recipe_state.dart';
+import 'package:cloudinary_public/cloudinary_public.dart';
 
 class CreateRecipeScreen extends StatefulWidget {
   @override
@@ -44,6 +51,10 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
   String? categoryName = '1 Food';
   String? submitContent = '';
   Category? category;
+  String filePath = "";
+  FilePickerResult? file;
+  String? link;
+
 
   Category submitcategory = Category(categoryId: 1, categoryName: '');
 
@@ -64,7 +75,53 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
     'Your Mom'
   ];
   List<Ingredient> listIngredient = [];
+  List<CreateRecipeStep> listStep = [];
   List<String> categoryTitle = [];
+
+  static Future<CloudinaryResponse> uploadFileOnCloudinary(
+      {required String filePath,
+        required CloudinaryResourceType resourceType}) async {
+    String result;
+    CloudinaryResponse response = new CloudinaryResponse(
+        assetId: '',
+        publicId: "",
+        createdAt: DateTime.now(),
+        url: "",
+        secureUrl: "",
+        originalFilename: "");
+    try {
+      var cloudinary =
+      CloudinaryPublic('thuanhoang2108', 'se8jipuu', cache: false);
+      response = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(filePath, resourceType: resourceType),
+      );
+    } on CloudinaryException catch (e, s) {
+      print(e.message);
+      print(e.request);
+    }
+    return response;
+  }
+
+  Future<void> selectFile() async {
+    CloudinaryResponse response = new CloudinaryResponse(
+        assetId: '',
+        publicId: "",
+        createdAt: DateTime.now(),
+        url: "",
+        secureUrl: "",
+        originalFilename: "");
+    try {
+      var result = await FilePicker.platform.pickFiles(
+        type: FileType.any,
+        allowMultiple: false,
+      );
+      setState(() {
+        filePath = result!.paths.first!;
+      });
+      print(filePath);
+      file = result;
+    } on PlatformException catch (e, s) {} on Exception catch (e, s) {}
+  }
 
   @override
   void initState() {
@@ -128,6 +185,44 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                           borderRadius: BorderRadius.circular(15.0),
                           borderSide: BorderSide(),
                         ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'Thumbnail',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(width: 1),
+                                borderRadius: BorderRadius.circular(10.0)),
+                            width: 80,
+                            height: 25,
+                            child: TextButton(
+                                onPressed: selectFile,
+                                child: Text(
+                                  'Choose Image',
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                                style: TextButton.styleFrom(
+                                  padding: const EdgeInsets.all(0),
+                                  primary: Colors.black,
+                                  textStyle: const TextStyle(fontSize: 10),
+                                )),
+                          ),
+                          Container(child: Text(filePath.split('/').last ,overflow: TextOverflow.ellipsis,)
+                          ,width: MediaQuery.of(context).size.width * 0.55,)
+                        ],
                       ),
                     ),
                     SizedBox(
@@ -526,7 +621,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                           ),
                           Spacer(),
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.57,
+                            width: MediaQuery.of(context).size.width * 0.55,
                             child: Text(
                               'Ingerdient*',
                               style: TextStyle(
@@ -562,7 +657,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                             width: 10,
                           ),
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.57,
+                            width: MediaQuery.of(context).size.width * 0.55,
                             child: TextFormField(
                               keyboardType: TextInputType.text,
                               controller: ingredient,
@@ -584,7 +679,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                             setState(() {
                               listIngredient.add(new Ingredient(
                                   ingredientName: ingredient.text,
-                                  amountInMg: amount.text));
+                                  amountInMg: int.parse(amount.text)));
                               ingredient.clear();
                               amount.clear();
                             });
@@ -612,7 +707,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                             children: [
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.15,
-                                child: Text(listIngredient[index].amountInMg),
+                                child: Text(listIngredient[index].amountInMg.toString()),
                               ),
                               Container(
                                   width:
@@ -649,6 +744,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
               ],
             )),
         Step(
+            state: currentStep > 2 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 2,
             title: Text(''),
             content: Column(
@@ -719,10 +815,9 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                                 _stepvalidate = true;
                               } else {
                                 setState(() {
-                                  recipeStepContents.add(stepcontent.text);
+                                  listStep.add(new  CreateRecipeStep(stepContent: stepcontent.text));
                                   _stepvalidate = false;
                                   stepcontent.clear();
-                                  print(recipeStepContents[0]);
                                 });
                               }
                             });
@@ -795,6 +890,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                               fontWeight: FontWeight.bold, fontSize: 20)),
                     ],
                   ),
+                  filePath != null ? Image.file(File(filePath),width: 108, height: 192,) : SizedBox(),
                   Text(submitcategory.categoryName),
                   Text(portion.toString() + " " + serving!),
                   Text("Difficulty: " + difficultys),
@@ -812,8 +908,8 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                       shrinkWrap: true,
                       itemCount: listIngredient.length,
                       itemBuilder: (context, index) => Container(
-                            child: Text(listIngredient[index].amountInMg +
-                                "mg " +
+                            child: Text((listIngredient[index].amountInMg.toString() +
+                                "mg") +
                                 listIngredient[index].ingredientName),
                           )),
                   ListView.builder(
@@ -875,19 +971,36 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
             onStepContinue: () async {
               final isLastStep = currentStep == getSteps().length - 1;
               if (isLastStep) {
-                 {
+                {
+                  if (file != null) {
+                    for (PlatformFile file in file!.files) {
+                      if (file.path != null) {
+                        var response = await uploadFileOnCloudinary(
+                          filePath: file.path.toString(),
+                          resourceType: CloudinaryResourceType.Auto,
+                        );
+                        setState(() {
+                          link = response.secureUrl;
+                        });
+                        print(link);
+                      }
+                    }
+                  }
                   _CreateRecipeBloc.add(CreateRecipeEvent(CreateRecipe(
                       userId: 1,
                       recipeCategoriesId: submitcategory.categoryId.toString(),
                       recipeTitle: title.text,
-                      recipeThumbnail: "desau",
-                      recipeContent: submitContent.toString(),
+                      recipeThumbnail: link.toString(),
+                      steps: listStep,
                       recipeDifficulty: difficulty.toString(),
                       portionType: portion.toString(),
                       portionSize: portiontype.toString(),
-                      prepTimeMinutes: (dprephour! * 60 + dprepminute!).toString(),
-                      bakingTimeMinutes: (dbakinghour! * 60 + dbakingminute!).toString(),
-                      restingTimeMinutes:(dresthour! * 60 + drestminute!).toString(),
+                      prepTimeMinutes:
+                          (dprephour! * 60 + dprepminute!),
+                      bakingTimeMinutes:
+                          (dbakinghour! * 60 + dbakingminute!),
+                      restingTimeMinutes:
+                          (dresthour! * 60 + drestminute!),
                       ingredients: listIngredient)));
                 }
               } else {
@@ -913,23 +1026,29 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                     const SizedBox(
                       width: 12,
                     ),
-                    Expanded(child:BlocListener<CreateRecipeBloc, CreateRecipeState>(
-                        listener: (context, state) {
-                          print(state);
-                          if (state is CreateRecipeStateSuccess) {
-                            Navigator.pushReplacement(
-                                context, MaterialPageRoute(builder: (context) => BlocProvider(
-                              create: (context) =>
-                              HomeBloc()..add(HomeFetchEvent()),
-                              child: MyHomePage(token: '123',
-                              ),
-                            )));
-                          }
-                        },
-                        child: ElevatedButton(
-                      child: Text(isLastStep ? 'CREATE' : 'NEXT'),
-                      onPressed: onStepContinue,
-                    ))),
+                    Expanded(
+                        child:
+                            BlocListener<CreateRecipeBloc, CreateRecipeState>(
+                                listener: (context, state) {
+                                  print(state);
+                                  if (state is CreateRecipeStateSuccess) {
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => BlocProvider(
+                                                  create: (context) =>
+                                                      HomeBloc()
+                                                        ..add(HomeFetchEvent()),
+                                                  child: MyHomePage(
+                                                    token: '123',
+                                                  ),
+                                                )));
+                                  }
+                                },
+                                child: ElevatedButton(
+                                  child: Text(isLastStep ? 'CREATE' : 'NEXT'),
+                                  onPressed: onStepContinue,
+                                ))),
                   ],
                 ),
               );

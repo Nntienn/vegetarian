@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,8 +9,11 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 import 'package:vegetarian/Screens/Login/create_account.dart';
+import 'package:vegetarian/Screens/Login/forgot_password_input_mail.dart';
 import 'package:vegetarian/Screens/MainScreen/main_screen.dart';
+import 'package:vegetarian/Screens/facebook_logged_in_screen.dart';
 import 'package:vegetarian/Screens/logged_in_page.dart';
+import 'package:vegetarian/blocs/forgot_password_bloc.dart';
 import 'package:vegetarian/blocs/home_blocs.dart';
 import 'package:vegetarian/blocs/login_blocs.dart';
 import 'package:vegetarian/blocs/register_blocs.dart';
@@ -30,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   late LoginBloc _loginBloc;
   late bool isLogin = false;
+
   // late ProgressDialog progressDialog;
 
   @override
@@ -158,12 +163,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         }
                         if (state is LoginStateSuccess) {
                           Navigator.pushReplacement(
-                              context, MaterialPageRoute(builder: (context) => BlocProvider(
-                            create: (context) =>
-                            HomeBloc()..add(HomeFetchEvent()),
-                            child: MyHomePage(token: '123',
-                            ),
-                          )));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BlocProvider(
+                                        create: (context) =>
+                                            HomeBloc()..add(HomeFetchEvent()),
+                                        child: MyHomePage(
+                                          token: '123',
+                                        ),
+                                      )));
                         }
                       },
                       child: InkWell(
@@ -190,18 +198,60 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+                    BlocListener<LoginBloc, LoginState>(
+                      listener: (context, state) {
+                        print(state);
+                        if (state is LoginStateFailure) {
+                          return _displayTopMotionToast(context, "fail");
+                        }
+                        if (state is LoginEmptyState) {
+                          return _displayTopMotionToast(context, "empty");
+                        }
+                        if (state is LoginStateSuccess) {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BlocProvider(
+                                    create: (context) =>
+                                    HomeBloc()..add(HomeFetchEvent()),
+                                    child: MyHomePage(
+                                      token: '123',
+                                    ),
+                                  )));
+                        }
+                      },
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                          onPrimary: Colors.black,
+                          minimumSize: Size(double.infinity, 50),
+                        ),
+                        icon: FaIcon(
+                          FontAwesomeIcons.google,
+                          color: Colors.red,
+                        ),
+                        label: Text('Sign in with Goole'),
+                        onPressed: signIn,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     ElevatedButton.icon(
-                      style:ElevatedButton.styleFrom(
+                      style: ElevatedButton.styleFrom(
                         primary: Colors.white,
                         onPrimary: Colors.black,
                         minimumSize: Size(double.infinity, 50),
                       ),
                       icon: FaIcon(
-                        FontAwesomeIcons.google,
-                        color: Colors.red,
+                        FontAwesomeIcons.facebook,
+                        color: Colors.blue,
                       ),
-                      label: Text('Sign in with Goole'),
-                      onPressed: signIn,
+                      label: Text('Sign in with Facebook'),
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => FacebookLogin()));
+                      },
                     ),
                     SizedBox(
                       height: 40,
@@ -211,15 +261,34 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => BlocProvider(create: (context) => RegisterBloc(),child: CreateAccount(),)));
+                                builder: (context) => BlocProvider(
+                                  create: (context) => ForgotPasswordBloc(),
+                                  child: InputMailScreen(),
+                                )));
+                      },
+                      child: Text(
+                        "Forgot Password?",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BlocProvider(
+                                      create: (context) => RegisterBloc(),
+                                      child: CreateAccount(),
+                                    )));
                       },
                       child: Text(
                         "Create new account?",
                         style: TextStyle(color: Colors.grey),
                       ),
                     ),
-                    SizedBox(height: 20,),
-
+                    SizedBox(
+                      height: 20,
+                    ),
                   ],
                 ),
               ),
@@ -258,21 +327,28 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future signIn() async {
     final user = await GoogleSignInApi.login();
-    if(user == null){
-ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Sign In Failed')));
-    }else{
-       final _googleSignIn = GoogleSignIn();
-      _googleSignIn.signIn().then((result){
-        result!.authentication.then((googleKey){
+    if (user == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Sign In Failed')));
+    } else {
+      final _googleSignIn = GoogleSignIn();
+      _googleSignIn.signIn().then((result) {
+        result!.authentication.then((googleKey) {
           print(googleKey.accessToken);
           // print(googleKey.idToken);
           print(_googleSignIn.currentUser!.displayName);
-        }).catchError((err){
+        }).catchError((err) {
           print('inner error');
         });
-      }).catchError((err){
+      }).catchError((err) {
         print('error occured');
       });
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoggedInPage(user : user)));}
+      String firstName = user.displayName!.split(" ")[0];
+      String lastName = "";
+      for(int i = 1; i<user.displayName!.split(" ").length;i++){
+        lastName = lastName+" " + user.displayName!.split(" ")[i];
+      }
+      _loginBloc.add(LoginWithGoogleEvent(user.email, firstName, lastName));
+    }
   }
 }

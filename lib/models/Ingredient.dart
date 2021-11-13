@@ -7,7 +7,7 @@ class Ingredient {
   });
 
   String ingredientName;
-  String amountInMg;
+  int amountInMg;
 
   factory Ingredient.fromRawJson(String str) => Ingredient.fromJson(json.decode(str));
 
