@@ -31,12 +31,12 @@ const EDIT_USER_BODY_INDEX = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/a
 const EDIT_USER_FAVORITE_INGREDIENT = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/user/preferences/';
 const EDIT_USER_ALLERGIES_INGREDIENT = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/user/allergies/';
 const GET_USER_FAVORITE_INGREDIENT = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/user/getpreferences/';
-const GET_USER_ALLERGIES_INGREDIENT = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/user/getallergies/';
+const GET_USER_ALLERGIES_INGREDIENT = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/aphahahhai/user/getallergies/';
 const GENERATE_WEEKLYMENU = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/menu/generate';
 const SAVE_WEEKLYMENU = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/menu/add/';
 const GET_WEEKLYMENU = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/menu/details/';
 
-
+//
 
 //Recipes
 const GET_10_RECIPES_FROM_API = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/recipes/get10recipes';
