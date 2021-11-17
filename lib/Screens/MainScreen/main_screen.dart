@@ -3,12 +3,12 @@ import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:intl/intl.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:vegetarian/Screens/BlogScreen/all_blogs_screen.dart';
 import 'package:vegetarian/Screens/BlogScreen/blog_screen.dart';
 import 'package:vegetarian/Screens/BlogScreen/user_blogs_screen.dart';
@@ -23,10 +23,11 @@ import 'package:vegetarian/Screens/UserProfile/favorite_ingredient_screen.dart';
 import 'package:vegetarian/Screens/UserProfile/generate_weekly_menu_screen.dart';
 import 'package:vegetarian/Screens/UserProfile/profile_menu_screen.dart';
 import 'package:vegetarian/Screens/UserProfile/user_liked_screen.dart';
+import 'package:vegetarian/Screens/Video_Screen/all_video_screen.dart';
 import 'package:vegetarian/Screens/Video_Screen/user_videos_screen.dart';
-import 'package:vegetarian/Screens/Video_Screen/video_screen.dart';
 import 'package:vegetarian/blocs/all_blogs_bloc.dart';
 import 'package:vegetarian/blocs/all_recipes_bloc.dart';
+import 'package:vegetarian/blocs/all_videos_bloc.dart';
 import 'package:vegetarian/blocs/allergies_bloc.dart';
 import 'package:vegetarian/blocs/blog_bloc.dart';
 import 'package:vegetarian/blocs/check_nutrition_bloc.dart';
@@ -40,11 +41,11 @@ import 'package:vegetarian/blocs/recipe_blocs.dart';
 import 'package:vegetarian/blocs/user_blogs_bloc.dart';
 import 'package:vegetarian/blocs/user_recipes_bloc.dart';
 import 'package:vegetarian/blocs/user_videos_bloc.dart';
-import 'package:vegetarian/blocs/video_bloc.dart';
 import 'package:vegetarian/blocs/weekly_menu_bloc.dart';
 import 'package:vegetarian/constants/constants.dart';
 import 'package:vegetarian/events/all_blogs_event.dart';
 import 'package:vegetarian/events/all_recipes_events.dart';
+import 'package:vegetarian/events/all_video_bloc.dart';
 import 'package:vegetarian/events/allergies_event.dart';
 import 'package:vegetarian/events/blog_event.dart';
 import 'package:vegetarian/events/check_nutrition_events.dart';
@@ -58,7 +59,6 @@ import 'package:vegetarian/events/recipe_event.dart';
 import 'package:vegetarian/events/user_blogs_events.dart';
 import 'package:vegetarian/events/user_recipes_events.dart';
 import 'package:vegetarian/events/user_videos_event.dart';
-import 'package:vegetarian/events/video_event.dart';
 import 'package:vegetarian/events/weekly_menu_event.dart';
 import 'package:vegetarian/repositories/local_data.dart';
 import 'package:vegetarian/states/home_states.dart';
@@ -87,7 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // leading: IconButton(onPressed: () {}, icon: Icon(Icons.menu)),
+        leading: SizedBox(),
+        leadingWidth: 0,
         actions: <Widget>[
           IconButton(
               onPressed: () {}, icon: Icon(Icons.search, color: Colors.black)),
@@ -168,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                     create: (context) =>
                                                     ProfileMenuBloc()
                                                       ..add(
-                                                          ProfileMenuFetchEvent()),
+                                                          ProfileMenuFetchEvent("home",-1)),
                                                     child: ProfileMenuScreen(),
                                                   )));
                                     },
@@ -468,7 +469,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   builder: (context) => BlocProvider(
                                         create: (context) => RecipeBloc()
                                           ..add(
-                                              RecipeFetchEvent(item.recipeId)),
+                                              RecipeFetchEvent(item.recipeId,"home")),
                                         child: RecipeScreen(),
                                       )));
                         },
@@ -593,7 +594,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   builder: (context) => BlocProvider(
                                         create: (context) => RecipeBloc()
                                           ..add(
-                                              RecipeFetchEvent(item.recipeId)),
+                                              RecipeFetchEvent(item.recipeId,"home")),
                                         child: RecipeScreen(),
                                       )));
                         },
@@ -686,7 +687,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                               create: (context) => RecipeBloc()
                                                 ..add(RecipeFetchEvent(state
                                                     .recommends[index]
-                                                    .recipeId)),
+                                                    .recipeId,"home")),
                                               child: RecipeScreen(),
                                             )));
                               },
@@ -850,7 +851,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       builder: (context) => BlocProvider(
                                             create: (context) => RecipeBloc()
                                               ..add(RecipeFetchEvent(state
-                                                  .recipes[index].recipeId)),
+                                                  .recipes[index].recipeId,"home")),
                                             child: RecipeScreen(),
                                           )));
                             },
@@ -995,14 +996,15 @@ class _MyHomePageState extends State<MyHomePage> {
                           scrollDirection: Axis.horizontal,
                           shrinkWrap: true,
                           itemBuilder: (context, index) => GestureDetector(
-                            onTap: () {
+                            onTap: () async {
+
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => BlocProvider(
                                             create: (context) => RecipeBloc()
                                               ..add(RecipeFetchEvent(state
-                                                  .recipes[index].recipeId)),
+                                                  .recipes[index].recipeId,"home")),
                                             child: RecipeScreen(),
                                           )));
                             },
@@ -1125,10 +1127,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                     MaterialPageRoute(
                                         builder: (context) => BlocProvider(
                                               create: (context) =>
-                                                  AllRecipesBloc()
+                                                  AllVideosBloc()
                                                     ..add(
-                                                        AllRecipesFetchEvent()),
-                                              child: AllRecipesScreen(),
+                                                        AllVideosFetchEvent()),
+                                              child: AllVideosScreen(),
                                             )));
                               },
                               child: Text('See All')))
@@ -1588,96 +1590,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      drawer: Container(
-        width: MediaQuery.of(context).size.width * 0.6,
-        child: Drawer(
-            child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: [
-            Container(
-              padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.05),
-              child: const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  image: DecorationImage(image: AssetImage("assets/logo.png")),
-                ),
-                child: Text(''),
-              ),
-            ),
-            ListTile(
-              title: const Text('Favorite Ingredients'),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BlocProvider(
-                              create: (context) => FavoriteIngredientsBloc()
-                                ..add(FavoriteIngredientsFetchEvent()),
-                              child: FavoriteIngredientsScreen(),
-                            )));
-              },
-            ),
-            ListTile(
-              title: const Text('Food Allergy'),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BlocProvider(
-                              create: (context) =>
-                                  AllergiesBloc()..add(AllergiesFetchEvent()),
-                              child: AllergiesScreen(),
-                            )));
-              },
-            ),
-            ListTile(
-              title: const Text('Check Daily Needed Nutrion'),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BlocProvider(
-                              create: (context) => CheckNutritionBloc()
-                                ..add(CheckNutritionFetchEvent()),
-                              child: CheckNutritionScreen(),
-                            )));
-              },
-            ),
-            ListTile(
-              title: const Text('Create Weekly Menu'),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BlocProvider(
-                              create: (context) =>
-                                  WeeklyMenuBloc()..add(WeeklyMenuFetchEvent()),
-                              child: WeeklyMenuScreen(),
-                            )));
-              },
-            ),
-            ListTile(
-              title: const Text('Find Nearest Store/Restaurant'),
-              onTap: () async {
-                Position position = await Geolocator.getCurrentPosition(
-                    desiredAccuracy: LocationAccuracy.high);
-                LatLng latlngPosition =
-                    LatLng(position.latitude, position.longitude);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BlocProvider(
-                              create: (context) => NearByBloc()
-                                ..add(NearByFetchEvent(latlngPosition)),
-                              child: MapScreen(),
-                            )));
-              },
-            ),
-          ],
-        )),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 

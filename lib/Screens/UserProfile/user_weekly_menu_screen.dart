@@ -1,4 +1,3 @@
-import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -8,22 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:vegetarian/Screens/MainScreen/main_screen.dart';
 import 'package:vegetarian/Screens/Recipes/recipe_screen.dart';
-import 'package:vegetarian/blocs/allergies_bloc.dart';
-import 'package:vegetarian/blocs/favorite_ingredients_bloc.dart';
 import 'package:vegetarian/blocs/home_blocs.dart';
 import 'package:vegetarian/blocs/recipe_blocs.dart';
 import 'package:vegetarian/blocs/user_weekly_menu_bloc.dart';
-import 'package:vegetarian/blocs/weekly_menu_bloc.dart';
-import 'package:vegetarian/events/allergies_event.dart';
-import 'package:vegetarian/events/favorite_ingredients_event.dart';
 import 'package:vegetarian/events/home_events.dart';
 import 'package:vegetarian/events/recipe_event.dart';
-import 'package:vegetarian/events/weekly_menu_event.dart';
-import 'package:vegetarian/models/list_ingredient_name.dart';
-import 'package:vegetarian/states/allergies_state.dart';
-import 'package:vegetarian/states/favorite_ingredients_state.dart';
 import 'package:vegetarian/states/user_weekly_menu_state.dart';
-import 'package:vegetarian/states/weekly_menu_state.dart';
 
 class UserWeeklyMenuScreen extends StatefulWidget {
   @override
@@ -163,7 +152,7 @@ class _UserWeeklyMenuState extends State<UserWeeklyMenuScreen> {
                                                   .weeklyMenu
                                                   .menu[page]
                                                   .listWeeklyRecipe[index]
-                                                  .recipeId)),
+                                                  .recipeId,"userweeklymenu")),
                                             child: RecipeScreen(),
                                           )));
                                 },

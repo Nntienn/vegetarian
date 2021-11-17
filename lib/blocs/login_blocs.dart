@@ -37,7 +37,7 @@ class LoginBloc extends Bloc<LoginBloc, LoginState> {
       //   yield LoginStateFailure(errorMessage: 'Incorrect email or password');
       // }
     }else if(event is LoginWithGoogleEvent){
-      bool isLogin = await  await googlelogin(event.email, event.firstName, event.lastName);
+      bool isLogin = await  await googlelogin(event.email, event.firstName, event.lastName,event.image);
       if(isLogin){
         yield LoginStateSuccess();
       }else{

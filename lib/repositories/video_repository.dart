@@ -53,6 +53,25 @@ Future<Listvideo?> get4bestVideos() async {
   }
 }
 
+Future<Listvideo?> getallVideos(int page, int limit) async {
+  try {
+    page = 1;
+    limit = 10;
+    final response = await http.get(Uri.parse('$GET_ALL_VIDEOS?page=$page&limit=$limit'));
+    print(response.statusCode.toString());
+    if (response.statusCode == 200) {
+      Map<String, dynamic> parse = jsonDecode(utf8.decode(response.bodyBytes));
+      var list = Listvideo.fromJson(parse);
+      return list;
+    } else {
+      return null;
+    }
+  } catch (exception) {
+    print(exception.toString());
+    return null;
+  }
+}
+
 Future<Video?> getVideo(int videoId) async {
   try {
     final response = await http.get(Uri.parse('$GET_VIDEO$videoId'));

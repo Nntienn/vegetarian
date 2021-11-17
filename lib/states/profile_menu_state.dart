@@ -7,6 +7,8 @@ class ProfileMenuState {
 class ProfileMenuStateInitial extends ProfileMenuState {}
 class ProfileMenuStateFailure extends ProfileMenuState {}
 class ProfileMenuStateSuccess extends ProfileMenuState {
+  final List<String> path;
   final User user;
-  ProfileMenuStateSuccess({required this.user});
+  final int lastPageid;
+  ProfileMenuStateSuccess(this.path, this.lastPageid, {required this.user});
 }

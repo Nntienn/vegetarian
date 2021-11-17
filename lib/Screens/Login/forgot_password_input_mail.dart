@@ -1,29 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
-import 'package:vegetarian/Screens/Login/reset_password.dart';
-
-import 'package:vegetarian/Screens/MainScreen/main_screen.dart';
+import 'package:vegetarian/Screens/Login/confirm_reset_password.dart';
 import 'package:vegetarian/blocs/forgot_password_bloc.dart';
-
-import 'package:vegetarian/blocs/home_blocs.dart';
-
-import 'package:vegetarian/blocs/verify_account_bloc.dart';
 import 'package:vegetarian/events/forgot_password_event.dart';
-import 'package:vegetarian/events/home_events.dart';
-
-import 'package:vegetarian/events/verify_account_event.dart';
 import 'package:vegetarian/repositories/google_sign_in_api.dart';
 import 'package:vegetarian/states/forgot_password_state.dart';
-
-import 'package:vegetarian/states/verify_account_state.dart';
 
 class InputMailScreen extends StatefulWidget {
   const InputMailScreen({Key? key}) : super(key: key);
@@ -150,8 +135,8 @@ class _InputMailScreenState extends State<InputMailScreen> {
                                   MaterialPageRoute(
                                       builder: (context) => BlocProvider(
                                         create: (context) =>
-                                        ForgotPasswordBloc()..add(ForgotPasswordFetchEvent(state.email)),
-                                        child: ResetPasswordScreen(token: state.email,
+                                        ForgotPasswordBloc()..add(ForgotPasswordConfirmFetchEvent(state.email)),
+                                        child: ResetPasswordConfirmScreen(token: state.email,
                                         ),
                                       )));
                             }

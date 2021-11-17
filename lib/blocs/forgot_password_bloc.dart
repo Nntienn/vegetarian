@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vegetarian/events/forgot_password_event.dart';
 import 'package:vegetarian/repositories/users_repository.dart';
@@ -11,6 +13,9 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordBloc, ForgotPasswordState> {
     if(event is ForgotPasswordFetchEvent){
       yield ForgotPasswordStateFetchSuccess(event.mail);
     }
+    if(event is ForgotPasswordConfirmFetchEvent){
+      yield ForgotPasswordVerifyStateFetchSuccess(event.mail);
+    }
     if (event is ForgotPasswordInputMailEvent) {
       try {
         bool? mail = await forgotPassword(event.mail);
@@ -23,8 +28,16 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordBloc, ForgotPasswordState> {
         print('State error: ' + exception.toString());
 
       }
-    }else if(event is ForgotPasswordResetEvent){
-      String? respond = await resetPassword(event.code, event.newPassword, event.confirmnewPassword);
+    }else if(event is ForgotPasswordVerifyEvent){
+     String? respond = await verifyResetPassword(event.code);
+     if(respond!.contains("Moving") ){
+       yield ForgotPasswordVerifyStateSuccess(event.mail);
+     }else{
+       yield ForgotPasswordVerifyStateFailure(errorMessage: respond);
+     }
+    }
+    else if(event is ForgotPasswordResetEvent){
+      String? respond = await resetPassword( event.newPassword, event.confirmnewPassword,event.email,);
       if(respond!.contains("successfully")){
         yield ForgotPasswordStateSuccess();
       }else {

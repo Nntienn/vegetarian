@@ -57,7 +57,7 @@ class _ChangePasswordState extends State<ChangePasswordScreen> {
                           BlocProvider(
                             create: (context) =>
                             ProfileMenuBloc()
-                              ..add(ProfileMenuFetchEvent()),
+                              ..add(ProfileMenuFetchEvent("",-1)),
                             child: ProfileMenuScreen(),
                           )));
             },
@@ -281,7 +281,7 @@ class _ChangePasswordState extends State<ChangePasswordScreen> {
                                                 create: (context) =>
                                                 ProfileMenuBloc()
                                                   ..add(
-                                                      ProfileMenuFetchEvent()),
+                                                      ProfileMenuFetchEvent("",-1)),
                                                 child: ProfileMenuScreen(),
                                               )));
                                 },

@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:vegetarian/Screens/MainScreen/main_screen.dart';
 import 'package:vegetarian/blocs/home_blocs.dart';
 import 'package:vegetarian/blocs/upload_video_bloc.dart';
@@ -15,6 +16,7 @@ import 'package:vegetarian/events/upload_video_event.dart';
 import 'package:vegetarian/models/upload_video.dart';
 import 'package:vegetarian/states/upload_video.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class UploadVideoScreen extends StatefulWidget {
   @override
@@ -32,6 +34,8 @@ class _UploadVideoScreenState extends State<UploadVideoScreen> {
   TextEditingController title = TextEditingController();
   bool _stepvalidate = false;
   final stepcontent = TextEditingController();
+  String imageName="";
+  String thumbnail="";
 
   static Future<CloudinaryResponse> uploadFileOnCloudinary(
       {required String filePath,
@@ -75,7 +79,19 @@ class _UploadVideoScreenState extends State<UploadVideoScreen> {
     } on PlatformException catch (e) {
     } on Exception catch (e, s) {}
   }
+  Future<void> getImage(String filepath) async {
+    String? fileName = await VideoThumbnail.thumbnailFile(
+      video: filepath,
+      thumbnailPath: (await getTemporaryDirectory()).path,
+      imageFormat: ImageFormat.JPEG,
+      maxHeight: 1920, // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
+      quality: 75,
+    );
+    setState(() {
+      imageName = fileName!;
+    });
 
+  }
   @override
   void initState() {
     super.initState();
@@ -272,6 +288,12 @@ class _UploadVideoScreenState extends State<UploadVideoScreen> {
                                             resourceType:
                                                 CloudinaryResourceType.Auto,
                                           );
+                                          await getImage(file.path.toString());
+                                          var irespond = await uploadFileOnCloudinary(filePath: imageName, resourceType: CloudinaryResourceType.Auto);
+                                          setState(() {
+                                            thumbnail = irespond.secureUrl;
+                                          });
+
                                           setState(() {
                                             link = response.secureUrl;
                                           });
@@ -287,7 +309,7 @@ class _UploadVideoScreenState extends State<UploadVideoScreen> {
                                             videoTitle: title.text,
                                             videoLink: link.toString(),
                                             videoDescription:
-                                                stepcontent.text)));
+                                                stepcontent.text, videoThumbnail: thumbnail)));
                                   }
                                 },
                                 child: Text("Upload")),

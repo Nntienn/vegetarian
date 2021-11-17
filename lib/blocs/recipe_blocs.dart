@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:vegetarian/events/recipe_event.dart';
 import 'package:vegetarian/models/comment.dart';
 import 'package:vegetarian/models/recipe.dart';
+import 'package:vegetarian/models/user.dart';
 import 'package:vegetarian/repositories/local_data.dart';
 import 'package:vegetarian/repositories/recipes_repository.dart';
 import 'package:vegetarian/repositories/users_repository.dart';
@@ -23,56 +23,66 @@ class RecipeBloc extends Bloc<RecipeBloc, RecipeState> {
         int recipeID = event.recipeID;
         print(recipeID);
         Recipe? recipe = await getRecipebyID(recipeID);
-        if(recipe != null){
-          print('1');
-        }else{
-          print('2');
-        }
+        User? author = await getUserbyID(recipe!.userId);
         List<Comment> comments = await getRecipeComments(recipeID);
         bool isLiked = await checkLike(recipeID);
+        List<String>? path = await LocalData().getPath();
+        if(path == null){
+          path = [];
+        }
+        path.add(event.lastPage);
+        print(path);
+        await LocalData().savePath(path);
         if (recipe != null) {
-          yield RecipeStateSuccess(recipe, comments, id,isLiked);
+          yield RecipeStateSuccess(
+              recipe, comments, id, isLiked, author!, path);
         }
       }
     }
-    if(event is RecipeCommentEvent){
+    if (event is RecipeCommentEvent) {
       bool comment = await commentRecipe(event.recipeId, event.comment);
-      if(comment){
+      if (comment) {
         String? token = await LocalData().getToken();
         Map<String?, dynamic> payload = Jwt.parseJwt(token!);
         int id = payload['id'];
         int recipeID = event.recipeId;
         Recipe? recipe = await getRecipebyID(recipeID);
+        User? author = await getUserbyID(recipe!.userId);
         List<Comment> comments = await getRecipeComments(recipeID);
         bool isLiked = await checkLike(recipeID);
-        yield RecipeStateSuccess(recipe!, comments, id, isLiked);
+        List<String>? path = await LocalData().getPath();
+        yield RecipeStateSuccess(recipe, comments, id, isLiked, author!, path!);
       }
     }
 
-    if(event is RecipeLikeEvent){
+    if (event is RecipeLikeEvent) {
       bool like = await likeRecipes(event.recipeID);
-      if(like){
+      if (like) {
         String? token = await LocalData().getToken();
         Map<String?, dynamic> payload = Jwt.parseJwt(token!);
         int id = payload['id'];
         int recipeID = event.recipeID;
         Recipe? recipe = await getRecipebyID(recipeID);
+        User? author = await getUserbyID(recipe!.userId);
         List<Comment> comments = await getRecipeComments(recipeID);
         bool isLiked = await checkLike(recipeID);
-        yield RecipeStateSuccess(recipe!, comments, id, isLiked);
+        List<String>? path = await LocalData().getPath();
+        yield RecipeStateSuccess(recipe, comments, id, isLiked, author!, path!);
       }
     }
-    if(event is RecipeDeleteCommentEvent){
+    if (event is RecipeDeleteCommentEvent) {
       bool delete = await deleteComment(event.commentId);
-      if(delete){
+      if (delete) {
         String? token = await LocalData().getToken();
         Map<String?, dynamic> payload = Jwt.parseJwt(token!);
         int id = payload['id'];
         int recipeID = event.recipeId;
         Recipe? recipe = await getRecipebyID(recipeID);
+        User? author = await getUserbyID(recipe!.userId);
         List<Comment> comments = await getRecipeComments(recipeID);
         bool isLiked = await checkLike(recipeID);
-        yield RecipeStateSuccess(recipe!, comments, id, isLiked);
+        List<String>? path = await LocalData().getPath();
+        yield RecipeStateSuccess(recipe, comments, id, isLiked, author!, path!);
       }
     }
   }

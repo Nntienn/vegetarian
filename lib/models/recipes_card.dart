@@ -17,6 +17,7 @@ class RecipesCard {
     required this.isPrivate,
     required this.userId,
     required this.isLike,
+    required this.isFlagged,
   });
 
   String recipeTitle;
@@ -30,6 +31,7 @@ class RecipesCard {
   bool isPrivate;
   int userId;
   bool isLike;
+  bool isFlagged;
 
   factory RecipesCard.fromRawJson(String str) => RecipesCard.fromJson(json.decode(str));
 
@@ -37,7 +39,7 @@ class RecipesCard {
 
   factory RecipesCard.fromJson(Map<String, dynamic> json) => RecipesCard(
     recipeTitle: json["recipe_title"],
-    recipeThumbnail: json["recipe_thumbnail"],
+    recipeThumbnail: json["recipe_thumbnail"]== null ? "":json["recipe_thumbnail"],
     firstName: json["first_name"],
     lastName: json["last_name"],
     recipeId: json["recipe_id"],
@@ -47,6 +49,7 @@ class RecipesCard {
     isPrivate: json["is_private"],
     userId: json["user_id"],
     isLike: json["is_like"],
+    isFlagged: json["is_flagged"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -61,5 +64,6 @@ class RecipesCard {
     "is_private": isPrivate,
     "user_id": userId,
     "is_like": isLike,
+    "is_flagged": isFlagged,
   };
 }

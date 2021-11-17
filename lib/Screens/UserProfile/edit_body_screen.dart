@@ -1,17 +1,12 @@
 import 'package:cool_alert/cool_alert.dart';
-import 'package:country_picker/country_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:vegetarian/Screens/UserProfile/profile_menu_screen.dart';
-import 'package:vegetarian/blocs/edit_basic_profile_bloc.dart';
 import 'package:vegetarian/blocs/edit_body_bloc.dart';
 import 'package:vegetarian/blocs/profile_menu_blocs.dart';
-import 'package:vegetarian/events/edit_basic_profile_event.dart';
 import 'package:vegetarian/events/edit_body_event.dart';
 import 'package:vegetarian/events/profile_menu_events.dart';
-import 'package:vegetarian/states/edit_basic_profile_state.dart';
 import 'package:vegetarian/states/edit_body_state.dart';
 
 class EditBodyScreen extends StatefulWidget {
@@ -58,7 +53,7 @@ class _EditBodyState extends State<EditBodyScreen> {
                   MaterialPageRoute(
                       builder: (context) => BlocProvider(
                             create: (context) =>
-                                ProfileMenuBloc()..add(ProfileMenuFetchEvent()),
+                                ProfileMenuBloc()..add(ProfileMenuFetchEvent("",-1)),
                             child: ProfileMenuScreen(),
                           )));
             },
@@ -84,7 +79,7 @@ class _EditBodyState extends State<EditBodyScreen> {
                 MaterialPageRoute(
                     builder: (context) => BlocProvider(
                           create: (context) =>
-                              ProfileMenuBloc()..add(ProfileMenuFetchEvent()),
+                              ProfileMenuBloc()..add(ProfileMenuFetchEvent("",-1)),
                           child: ProfileMenuScreen(),
                         )));
           },

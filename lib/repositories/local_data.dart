@@ -10,6 +10,15 @@ class LocalData {
     SharedPreferences sp = await SharedPreferences.getInstance();
     return sp.getString('password');
   }
+  Future<void> savePath(List<String> path) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setStringList('path', path);
+  }
+
+  Future<List<String>?> getPath() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    return sp.getStringList('path');
+  }
 
   Future<bool?> isLogin() async {
     SharedPreferences sp = await SharedPreferences.getInstance();

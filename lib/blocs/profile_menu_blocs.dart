@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jwt_decode/jwt_decode.dart';
-import 'package:vegetarian/events/profile_events.dart';
 import 'package:vegetarian/events/profile_menu_events.dart';
 import 'package:vegetarian/models/user.dart';
 import 'package:vegetarian/repositories/local_data.dart';
@@ -20,8 +19,15 @@ class ProfileMenuBloc extends Bloc<ProfileMenuBloc, ProfileMenuState> {
           Map<String?, dynamic> payload = Jwt.parseJwt(token);
           int id = payload['id'];
           User? user = await getUser();
+          List<String>? path = await LocalData().getPath();
+
+          if(path==null){
+            path = [];
+          }
+          path!.add(event.path);
+          print(path);
           yield
-          ProfileMenuStateSuccess(user: user!);
+          ProfileMenuStateSuccess(path!,event.lastPageId,user: user!);
         } else {
           yield ProfileMenuStateFailure();
         }
@@ -33,8 +39,10 @@ class ProfileMenuBloc extends Bloc<ProfileMenuBloc, ProfileMenuState> {
       bool? changeImage = await updateProfileImage(event.image);
       if(changeImage!){
         User? user = await getUser();
+        List<String>? path = await LocalData().getPath();
+        var current = state as ProfileMenuStateSuccess;
         yield
-        ProfileMenuStateSuccess(user: user!);
+        ProfileMenuStateSuccess(path!,current.lastPageid,user: user!);
       }
     }
   }

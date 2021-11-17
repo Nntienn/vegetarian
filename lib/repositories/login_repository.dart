@@ -32,12 +32,13 @@ Future<bool> login(String email, String password) async {
 }
 
 Future<bool> googlelogin(
-    String email, String firstName, String lastName) async {
+    String email, String firstName, String lastName, String image) async {
   try {
     var params = {
       "email": email,
       "first_name": firstName,
-      "last_name": lastName
+      "last_name": lastName,
+      "image": image
     };
     final response = await http
         .post(Uri.parse('$GOOGLE_LOGIN'), body: json.encode(params), headers: {

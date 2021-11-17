@@ -78,7 +78,7 @@ class ListWeeklyRecipe {
   factory ListWeeklyRecipe.fromJson(Map<String, dynamic> json) => ListWeeklyRecipe(
     recipeId: json["recipe_id"],
     recipeTitle: json["recipe_title"],
-    recipeThumbnail: json["recipe_thumbnail"],
+    recipeThumbnail: json["recipe_thumbnail"]== null ?  "":json["recipe_thumbnail"],
     mealOfDay: json["meal_of_day"],
     calo: json["calo"],
   );

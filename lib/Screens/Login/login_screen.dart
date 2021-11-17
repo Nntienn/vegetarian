@@ -348,7 +348,7 @@ class _LoginScreenState extends State<LoginScreen> {
       for(int i = 1; i<user.displayName!.split(" ").length;i++){
         lastName = lastName+" " + user.displayName!.split(" ")[i];
       }
-      _loginBloc.add(LoginWithGoogleEvent(user.email, firstName, lastName));
+      _loginBloc.add(LoginWithGoogleEvent(user.email, firstName, lastName, user.photoUrl!));
     }
   }
 }

@@ -48,7 +48,7 @@ class RRecipesCard {
   factory RRecipesCard.fromJson(Map<String, dynamic> json) => RRecipesCard(
     userId: json["user_id"],
     recipeTitle: json["recipe_title"],
-    recipeThumbnail: json["recipe_thumbnail"],
+    recipeThumbnail: json["recipe_thumbnail"]  == null ? "" : json["recipe_thumbnail"],
     firstName: json["first_name"],
     lastName: json["last_name"],
     recipeId: json["recipe_id"],

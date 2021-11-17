@@ -9,11 +9,34 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-
+import 'package:vegetarian/Screens/MainScreen/main_screen.dart';
+import 'package:vegetarian/Screens/Recipes/all_recipes_screen.dart';
+import 'package:vegetarian/Screens/Recipes/user_recipes_screen.dart';
+import 'package:vegetarian/Screens/UserProfile/generate_weekly_menu_screen.dart';
+import 'package:vegetarian/Screens/UserProfile/profile_menu_screen.dart';
+import 'package:vegetarian/Screens/UserProfile/user_liked_screen.dart';
+import 'package:vegetarian/Screens/UserProfile/user_weekly_menu_screen.dart';
+import 'package:vegetarian/Screens/for_visitor/visit_profile.dart';
+import 'package:vegetarian/blocs/all_recipes_bloc.dart';
+import 'package:vegetarian/blocs/home_blocs.dart';
+import 'package:vegetarian/blocs/liked_bloc.dart';
+import 'package:vegetarian/blocs/profile_menu_blocs.dart';
 import 'package:vegetarian/blocs/recipe_blocs.dart';
+import 'package:vegetarian/blocs/user_recipes_bloc.dart';
+import 'package:vegetarian/blocs/user_weekly_menu_bloc.dart';
+import 'package:vegetarian/blocs/visitor_profile_bloc.dart';
+import 'package:vegetarian/blocs/weekly_menu_bloc.dart';
 import 'package:vegetarian/constants/constants.dart';
+import 'package:vegetarian/events/all_recipes_events.dart';
+import 'package:vegetarian/events/home_events.dart';
+import 'package:vegetarian/events/liked_events.dart';
+import 'package:vegetarian/events/profile_menu_events.dart';
 import 'package:vegetarian/events/recipe_event.dart';
-
+import 'package:vegetarian/events/user_recipes_events.dart';
+import 'package:vegetarian/events/user_weekly_menu_event.dart';
+import 'package:vegetarian/events/visitor_profile_event.dart';
+import 'package:vegetarian/events/weekly_menu_event.dart';
+import 'package:vegetarian/repositories/local_data.dart';
 import 'package:vegetarian/states/recipes_state.dart';
 
 class RecipeScreen extends StatefulWidget {
@@ -38,6 +61,250 @@ class _ProfileState extends State<RecipeScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Recipe'),
+        leading:
+            BlocBuilder<RecipeBloc, RecipeState>(builder: (context, state) {
+          if (state is RecipeStateSuccess) {
+            return IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                print(state.path.last);
+                if(state.path.last == "home"){
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              BlocProvider(
+                                create: (context) =>
+                                HomeBloc()
+                                  ..add(HomeFetchEvent()),
+                                child: MyHomePage(
+                                  token: '123',
+                                ),
+                              )));
+
+                }
+                if(state.path.last == "userlike"){
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              BlocProvider(
+                                create: (context) =>
+                                LikedBloc()
+                                  ..add(LikedFetchEvent()),
+                                child: UserLikedScreen(
+                                ),
+                              )));
+                }
+                if(state.path.last == "allrecipe"){
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              BlocProvider(
+                                create: (context) =>
+                                AllRecipesBloc()
+                                  ..add(AllRecipesFetchEvent()),
+                                child: AllRecipesScreen(
+                                ),
+                              )));
+                }
+                if(state.path.last == "weeklymenu"){
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              BlocProvider(
+                                create: (context) =>
+                                WeeklyMenuBloc()
+                                  ..add(WeeklyMenuFetchEvent()),
+                                child: WeeklyMenuScreen(
+                                ),
+                              )));
+                }
+                if(state.path.last == "userrecipe"){
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              BlocProvider(
+                                create: (context) =>
+                                UserRecipesBloc()
+                                  ..add(UserRecipesFetchEvent(state.userID)),
+                                child: UserRecipesScreen(
+                                ),
+                              )));
+                }
+                if(state.path.last == "visitor"){
+                  print("cai lone gi v");
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BlocProvider(
+                            create: (context) =>
+                            VisitorProfileBloc()
+                              ..add(
+                                  VisitorProfileFetchEvent(
+                                      state.author.id,
+                                      "author",
+                                      state.recipe
+                                          .recipeId)),
+                            child: VisitorProfileScreen(),
+                          )));
+
+                }
+                if(state.path.last == "backtorecipe"){
+                  state.path.removeLast();
+                  if(state.path.last == "home"){
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                BlocProvider(
+                                  create: (context) =>
+                                  HomeBloc()
+                                    ..add(HomeFetchEvent()),
+                                  child: MyHomePage(
+                                    token: '123',
+                                  ),
+                                )));
+
+                  }
+
+                  if(state.path.last == "userlike"){
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                BlocProvider(
+                                  create: (context) =>
+                                  LikedBloc()
+                                    ..add(LikedFetchEvent()),
+                                  child: UserLikedScreen(
+                                  ),
+                                )));
+                  }
+                  if(state.path.last == "allrecipe"){
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                BlocProvider(
+                                  create: (context) =>
+                                  AllRecipesBloc()
+                                    ..add(AllRecipesFetchEvent()),
+                                  child: AllRecipesScreen(
+                                  ),
+                                )));
+                  }
+                  if(state.path.last == "weeklymenu"){
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                BlocProvider(
+                                  create: (context) =>
+                                  WeeklyMenuBloc()
+                                    ..add(WeeklyMenuFetchEvent()),
+                                  child: WeeklyMenuScreen(
+                                  ),
+                                )));
+                  }
+                  if(state.path.last == "userrecipe"){
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                BlocProvider(
+                                  create: (context) =>
+                                  UserRecipesBloc()
+                                    ..add(UserRecipesFetchEvent(state.userID)),
+                                  child: UserRecipesScreen(
+                                  ),
+                                )));
+                  }
+                }
+                if(state.path.last == "profile"){
+                  state.path.removeLast();
+                  if(state.path.last == "home"){
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                BlocProvider(
+                                  create: (context) =>
+                                  HomeBloc()
+                                    ..add(HomeFetchEvent()),
+                                  child: MyHomePage(
+                                    token: '123',
+                                  ),
+                                )));
+
+                  }
+
+                  if(state.path.last == "userlike"){
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                BlocProvider(
+                                  create: (context) =>
+                                  LikedBloc()
+                                    ..add(LikedFetchEvent()),
+                                  child: UserLikedScreen(
+                                  ),
+                                )));
+                  }
+                  if(state.path.last == "allrecipe"){
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                BlocProvider(
+                                  create: (context) =>
+                                  AllRecipesBloc()
+                                    ..add(AllRecipesFetchEvent()),
+                                  child: AllRecipesScreen(
+                                  ),
+                                )));
+                  }
+                  if(state.path.last == "weeklymenu"){
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                BlocProvider(
+                                  create: (context) =>
+                                  WeeklyMenuBloc()
+                                    ..add(WeeklyMenuFetchEvent()),
+                                  child: WeeklyMenuScreen(
+                                  ),
+                                )));
+                  }
+                  if(state.path.last == "userrecipe"){
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                BlocProvider(
+                                  create: (context) =>
+                                  UserRecipesBloc()
+                                    ..add(UserRecipesFetchEvent(state.userID)),
+                                  child: UserRecipesScreen(
+                                  ),
+                                )));
+                  }
+                }
+                state.path.removeLast();
+                LocalData().savePath(state.path);
+              },
+            );
+          }
+          return SizedBox();
+        }),
       ),
       body: SafeArea(
         child: BlocConsumer<RecipeBloc, RecipeState>(
@@ -82,7 +349,9 @@ class _ProfileState extends State<RecipeScreen> {
                       '<h2> Step ' +
                       (state.recipe.steps[i].stepIndex + 1).toString() +
                       '</h2>' +
-                      '<p>'+state.recipe.steps[i].stepContent+'</p>';
+                      '<p>' +
+                      state.recipe.steps[i].stepContent +
+                      '</p>';
                 }
                 ;
                 for (int i = 0; i < state.recipe.ingredients.length; i++) {
@@ -136,7 +405,8 @@ class _ProfileState extends State<RecipeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  width: MediaQuery.of(context).size.width * 0.75,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.75,
                                   child: Text(
                                     state.recipe.recipeTitle,
                                     style: TextStyle(
@@ -145,9 +415,13 @@ class _ProfileState extends State<RecipeScreen> {
                                         color: Colors.white),
                                   ),
                                 ),
-                                Text("Time Created: "+
-                                  DateFormat('dd-MM-yyyy').format(state.recipe.timeCreated),
-                                  style: TextStyle(fontStyle: FontStyle.italic,color: Colors.white),
+                                Text(
+                                  "Time Created: " +
+                                      DateFormat('dd-MM-yyyy')
+                                          .format(state.recipe.timeCreated),
+                                  style: TextStyle(
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.white),
                                 ),
                               ],
                             ),
@@ -160,21 +434,20 @@ class _ProfileState extends State<RecipeScreen> {
                                         color: Colors.white)),
                                 IconButton(
                                     onPressed: () {
-                                      _recipeBloc.add(
-                                          RecipeLikeEvent(state.recipe.recipeId));
+                                      _recipeBloc.add(RecipeLikeEvent(
+                                          state.recipe.recipeId));
                                     },
                                     icon: state.isLiked == true
                                         ? Icon(
-                                      FontAwesomeIcons.solidHeart,
-                                      color: Colors.red,
-                                    )
+                                            FontAwesomeIcons.solidHeart,
+                                            color: Colors.red,
+                                          )
                                         : Icon(
-                                      FontAwesomeIcons.heart,
-                                      color: Colors.white,
-                                    ))
+                                            FontAwesomeIcons.heart,
+                                            color: Colors.white,
+                                          ))
                               ],
                             ),
-
                           ],
                         ),
                       )
@@ -185,13 +458,75 @@ class _ProfileState extends State<RecipeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Author:' +
-                                ' ' +
-                                state.recipe.firstName +
-                                ' ' +
-                                state.recipe.lastName,
-                            style: TextStyle(fontStyle: FontStyle.italic),
+                          GestureDetector(
+                            onTap: () {
+                              state.userID == state.author.id?  Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          BlocProvider(
+                                            create: (context) =>
+                                            ProfileMenuBloc()
+                                              ..add(
+                                                  ProfileMenuFetchEvent("recipe",state.recipe
+                                                      .recipeId)),
+                                            child: ProfileMenuScreen(),
+                                          ))) : Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BlocProvider(
+                                            create: (context) =>
+                                                VisitorProfileBloc()
+                                                  ..add(
+                                                      VisitorProfileFetchEvent(
+                                                          state.author.id,
+                                                          "recipe",
+                                                          state.recipe
+                                                              .recipeId)),
+                                            child: VisitorProfileScreen(),
+                                          )));
+                            },
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 20,
+                                  child: ClipOval(
+                                    child: state.author.profileImage == ""
+                                        ? Image.network(
+                                            "https://www.donkey.bike/wp-content/uploads/2020/12/user-member-avatar-face-profile-icon-vector-22965342-e1608640557889.jpg",
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.05,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.05,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.network(
+                                            state.author.profileImage,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.05,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.05,
+                                            fit: BoxFit.cover,
+                                          ),
+                                  ),
+                                ),
+                                Text(
+                                  "  " +
+                                      state.author.firstName +
+                                      " " +
+                                      state.author.lastName,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
                           ),
                           Text(
                             'Difficulty: ' +
@@ -233,10 +568,30 @@ class _ProfileState extends State<RecipeScreen> {
                             'Nutrition: ',
                             style: TextStyle(fontStyle: FontStyle.italic),
                           ),
-                          state.recipe.nutrition.calories != 0.0 ? Text(' - Calories: ' + state.recipe.nutrition.calories.toString()): SizedBox(height: 0,),
-                          state.recipe.nutrition.protein != 0.0 ? Text(' - Protein: ' + state.recipe.nutrition.protein.toString()): SizedBox(height: 0,),
-                          state.recipe.nutrition.fat != 0.0 ? Text(' - Fat: ' + state.recipe.nutrition.fat.toString()): SizedBox(height: 0,),
-                          state.recipe.nutrition.carb != 0.0 ? Text(' - Carb: ' + state.recipe.nutrition.carb.toString()): SizedBox(height: 0,),
+                          state.recipe.nutrition.calories != 0.0
+                              ? Text(' - Calories: ' +
+                                  state.recipe.nutrition.calories.toString())
+                              : SizedBox(
+                                  height: 0,
+                                ),
+                          state.recipe.nutrition.protein != 0.0
+                              ? Text(' - Protein: ' +
+                                  state.recipe.nutrition.protein.toString())
+                              : SizedBox(
+                                  height: 0,
+                                ),
+                          state.recipe.nutrition.fat != 0.0
+                              ? Text(' - Fat: ' +
+                                  state.recipe.nutrition.fat.toString())
+                              : SizedBox(
+                                  height: 0,
+                                ),
+                          state.recipe.nutrition.carb != 0.0
+                              ? Text(' - Carb: ' +
+                                  state.recipe.nutrition.carb.toString())
+                              : SizedBox(
+                                  height: 0,
+                                ),
                           SizedBox(height: screenSize.height / 50),
                           Container(
                             height: 2.0,
@@ -246,8 +601,8 @@ class _ProfileState extends State<RecipeScreen> {
                           Container(
                               // height: MediaQuery.of(context).size.height * 0.40,
                               child: Html(
-                                data: listStep,
-                              )),
+                            data: listStep,
+                          )),
                         ],
                       ),
                     ),

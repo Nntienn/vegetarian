@@ -24,6 +24,7 @@ const EDIT_USER_PROFILE_IMAGE = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHO
 const GET_USER_BY_ID = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/user/';
 const CHANGE_USER_PASSWORD_BY_ID = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/user/update/password/';
 const FORGOT_PASSWORD = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/user/forgot';
+const VERIFY_RESET_PASSWORD = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/user/verify/resetpassword';
 const FORGOT_PASSWORD_RESEND = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/user/sendagain/reset';
 const RESET_PASSWORD = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/user/resetPassword';
 const CHECK_USER_DAILY_NUTRITION = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/user/calculate/nutrition';
@@ -54,6 +55,7 @@ const LIKE_RECIPE = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/recipe
 const DELETE_COMMENT = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/user/deleteComment/';
 const EDIT_RECIPE = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/recipes/edit/';
 const RECOMMENT_RECIPE_FOR_USER = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/recipes/suggestion/';
+const LIST_RECIPES_VISTOR = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/recipes/getallbyuserIDdifferent/';
 
 
 //Blogs
@@ -70,7 +72,11 @@ const GET_USER_LIKED = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/use
 const UPLOAD_VIDEO = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/video/upload';
 const GET_4_VIDEOS = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/video/get4videos';
 const GET_VIDEO = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/video/getvideoby/';
+const GET_ALL_VIDEOS = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/video/getall';
 
 //Google_maps_api_key
 String mapkey = "AIzaSyCjh4wjUFsNKfo6pcPMiBGLQi5_bziD3ig";
 const GET_NEARBY = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
+
+//search
+const SEARCH = 'http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/home/find';

@@ -250,7 +250,7 @@ class _UserRecipesScreenState extends State<UserRecipesScreen> {
                                     builder: (context) => BlocProvider(
                                           create: (context) => RecipeBloc()
                                             ..add(RecipeFetchEvent(
-                                                state.recipes[index].recipeId)),
+                                                state.recipes[index].recipeId,"userrecipe")),
                                           child: RecipeScreen(),
                                         )));
                           },

@@ -55,7 +55,7 @@ class _EditBasicProfileState extends State<EditBasicProfileScreen> {
                   MaterialPageRoute(
                       builder: (context) => BlocProvider(
                             create: (context) =>
-                                ProfileMenuBloc()..add(ProfileMenuFetchEvent()),
+                                ProfileMenuBloc()..add(ProfileMenuFetchEvent("",-1)),
                             child: ProfileMenuScreen(),
                           )));
             },
@@ -84,7 +84,7 @@ class _EditBasicProfileState extends State<EditBasicProfileScreen> {
                               create: (context) =>
                               ProfileMenuBloc()
                                 ..add(
-                                    ProfileMenuFetchEvent()),
+                                    ProfileMenuFetchEvent("",-1)),
                               child: ProfileMenuScreen(),
                             )));
               },

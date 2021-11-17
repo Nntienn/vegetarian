@@ -12,6 +12,7 @@ class LoginWithGoogleEvent extends LoginBloc{
   final String email;
   final String firstName;
   final String lastName;
-  LoginWithGoogleEvent(this.email, this.firstName, this.lastName);
+  final String image;
+  LoginWithGoogleEvent(this.email, this.firstName, this.lastName, this.image);
 
 }

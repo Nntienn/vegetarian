@@ -171,6 +171,29 @@ Future<bool?> forgotPassword(
   }
 }
 
+Future<String?> verifyResetPassword(
+    String code,
+    ) async {
+  try {
+
+    final response = await http.put(Uri.parse('$VERIFY_RESET_PASSWORD?code=$code'),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.acceptHeader: "*/*",
+        });
+    print(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      return response.body;
+    }
+  } catch (exception) {
+    print('forgot pass error: ' + exception.toString());
+    return "fail";
+  }
+}
+
 Future<bool?> forgotPasswordresend(
     String email,
     ) async {
@@ -225,17 +248,18 @@ Future<bool?> updateProfileImage(
 }
 
 Future<String?> resetPassword(
-    String code,
     String password,
     String confirm,
+    String email
     ) async {
   try {
     var params = {
       "newPassword": password,
       "confirmPassword": confirm,
-
+      "email":email
     };
-    final response = await http.put(Uri.parse('$RESET_PASSWORD?code=$code'),
+    print(email);
+    final response = await http.put(Uri.parse('$RESET_PASSWORD'),
         body: json.encode(params),
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
@@ -415,6 +439,29 @@ Future<User?> getUser(
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.acceptHeader: "*/*",
           HttpHeaders.authorizationHeader: token
+        });
+    print(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> parse = jsonDecode(utf8.decode(response.bodyBytes));
+      final user = User.fromJson(parse);
+      return user;
+    } else {
+      return null;
+    }
+  } catch (exception) {
+    print('edit User information error: ' + exception.toString());
+    return null;
+  }
+}
+
+Future<User?> getUserbyID(int id
+    ) async {
+  try {
+    final response = await http.get(Uri.parse('$GET_USER_BY_ID$id'),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.acceptHeader: "*/*",
         });
     print(response.body);
     print(response.statusCode);

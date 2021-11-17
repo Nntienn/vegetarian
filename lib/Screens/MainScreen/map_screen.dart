@@ -4,16 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:vegetarian/Screens/Recipes/recipe_screen.dart';
-import 'package:vegetarian/blocs/all_recipes_bloc.dart';
 import 'package:vegetarian/blocs/nearby_bloc.dart';
-import 'package:vegetarian/blocs/recipe_blocs.dart';
-import 'package:vegetarian/blocs/user_recipes_bloc.dart';
-import 'package:vegetarian/constants/constants.dart';
-import 'package:vegetarian/events/recipe_event.dart';
-import 'package:vegetarian/states/all_recipes_state.dart';
 import 'package:vegetarian/states/near_by_state.dart';
-import 'package:vegetarian/states/user_recipes_state.dart';
 
 class MapScreen extends StatefulWidget {
   MapScreen({Key? key}) : super(key: key);

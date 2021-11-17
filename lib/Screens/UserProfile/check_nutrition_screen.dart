@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:vegetarian/Screens/MainScreen/main_screen.dart';
 import 'package:vegetarian/blocs/check_nutrition_bloc.dart';
+import 'package:vegetarian/blocs/home_blocs.dart';
 import 'package:vegetarian/events/check_nutrition_events.dart';
+import 'package:vegetarian/events/home_events.dart';
 import 'package:vegetarian/models/recipe.dart';
 import 'package:vegetarian/states/check_nutrition_state.dart';
 
@@ -50,6 +53,17 @@ class _CheckNutritionState extends State<CheckNutritionScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Check Your Nutrition"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back), onPressed: () {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => BlocProvider(
+            create: (context) =>
+            HomeBloc()..add(HomeFetchEvent()),
+            child: MyHomePage(token: '123',
+            ),
+          )));
+        },
+        ),
       ),
       body: Center(
           child: BlocConsumer<CheckNutritionBloc, CheckNutritionState>(

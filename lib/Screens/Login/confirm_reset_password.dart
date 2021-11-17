@@ -4,26 +4,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 import 'package:vegetarian/Screens/Login/login_screen.dart';
+import 'package:vegetarian/Screens/Login/reset_password.dart';
 import 'package:vegetarian/blocs/forgot_password_bloc.dart';
 import 'package:vegetarian/blocs/login_blocs.dart';
 import 'package:vegetarian/events/forgot_password_event.dart';
 import 'package:vegetarian/events/login_events.dart';
 import 'package:vegetarian/states/forgot_password_state.dart';
 
-class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({Key? key, required this.token}) : super(key: key);
+class ResetPasswordConfirmScreen extends StatefulWidget {
+  const ResetPasswordConfirmScreen({Key? key, required this.token}) : super(key: key);
   final String token;
   @override
-  _ResetPasswordScreenState createState() => _ResetPasswordScreenState();
+  _ResetPasswordConfirmScreenState createState() => _ResetPasswordConfirmScreenState();
 }
 
-class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+class _ResetPasswordConfirmScreenState extends State<ResetPasswordConfirmScreen> {
   late ForgotPasswordBloc _ForgotPasswordBloc;
   final _codeController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmpassController = TextEditingController();
   late bool isLogin = false;
-  
+
   // late ProgressDialog progressDialog;
 
   @override
@@ -72,15 +71,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             SizedBox(
               height: 10,
             ),
-            // Center(
-            //   child: Text(
-            //     "Vegetarian Application",
-            //     style: TextStyle(color: Colors.white, fontSize: 18),
-            //   ),
-            // ),
-            // SizedBox(
-            //   height: 30,
-            // ),
             Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -96,7 +86,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           children: [
                             Center(
                               child: Text(
-                                "Input Mail",
+                                "Input Verify Code",
                                 style: TextStyle(
                                     color: Colors.grey.shade500,
                                     fontSize: 40,
@@ -113,24 +103,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                       bottom:
                                       BorderSide(color: Colors.grey.shade200))),
                               child: TextField(
-                                controller: _passwordController,
+                                controller: _codeController,
                                 decoration: InputDecoration(
-                                    hintText: "Input new password",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    border: InputBorder.none),
-                              ),
-
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom:
-                                      BorderSide(color: Colors.grey.shade200))),
-                              child: TextField(
-                                controller: _confirmpassController,
-                                decoration: InputDecoration(
-                                    hintText: "Input confirm password",
+                                    hintText: "Input Verify Code",
                                     hintStyle: TextStyle(color: Colors.grey),
                                     border: InputBorder.none),
                               ),
@@ -143,28 +118,29 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         ),
                         BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(
                             builder: (context, state) {
-                              if(state is ForgotPasswordStateFetchSuccess){
-                                print(state.email+"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                              if(state is ForgotPasswordVerifyStateFetchSuccess){
                                 return BlocListener<ForgotPasswordBloc, ForgotPasswordState>(
                                   listener: (context, state) {
                                     print(state);
-                                    if (state is ForgotPasswordStateFailure) {
+                                    if (state is ForgotPasswordVerifyStateFailure) {
                                       return _displayTopMotionToast(context, state.errorMessage);
                                     }
-                                    if (state is ForgotPasswordStateSuccess) {
-                                      Navigator.push(
+                                    if (state is ForgotPasswordVerifyStateSuccess) {
+                                      print(state.email);
+                                      Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => BlocProvider(
                                                 create: (context) =>
-                                                LoginBloc()..add(LoginFetchEvent()),
-                                                child: LoginScreen(),
+                                                ForgotPasswordBloc()..add(ForgotPasswordFetchEvent(state.email)),
+                                                child: ResetPasswordScreen(token: state.email,
+                                                ),
                                               )));
                                     }
                                   },
                                   child: InkWell(
                                     onTap: () async  {
-                                      _ForgotPasswordBloc.add(ForgotPasswordResetEvent(_passwordController.value.text,_confirmpassController.text,state.email));
+                                      _ForgotPasswordBloc.add(ForgotPasswordVerifyEvent(state.email,_codeController.value.text));
                                     },
                                     child: Container(
                                       height: 50,
@@ -187,6 +163,22 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                               }
                               return SizedBox();
                             }
+                        ),
+                        BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(
+                            builder: (context, state) {
+                              if(state is ForgotPasswordVerifyStateFetchSuccess){
+                                return TextButton(
+                                  onPressed: () async {
+                                    _ForgotPasswordBloc.add(ForgotPasswordResendCodeEvent(state.email));
+                                  },
+                                  child: Text(
+                                    "Resend code",
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                );
+                              }
+                              return SizedBox();
+                            }
                         )
 
                       ],
@@ -201,14 +193,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   _displayTopMotionToast(BuildContext context, String msg) {
-        MotionToast.error(
-          title: "ERROR",
-          titleStyle: TextStyle(fontWeight: FontWeight.bold),
-          description: msg,
-          animationType: ANIMATION.FROM_BOTTOM,
-          position: MOTION_TOAST_POSITION.BOTTOM,
-          width: 300,
-        ).show(context);
+    MotionToast.error(
+      title: "ERROR",
+      titleStyle: TextStyle(fontWeight: FontWeight.bold),
+      description: msg,
+      animationType: ANIMATION.FROM_BOTTOM,
+      position: MOTION_TOAST_POSITION.BOTTOM,
+      width: 300,
+    ).show(context);
 
 
   }

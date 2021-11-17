@@ -125,7 +125,7 @@ Future<List<RecipesCard>> getallRecipes() async {
   try {
     final response =
         await http.get(Uri.parse('$GET_ALL_RECIPES?page=1&limit=100'));
-    print(response.statusCode.toString());
+    print(response.statusCode.toString()+ "all recipes");
     if (response.statusCode == 200) {
       Map<String, dynamic> parse = jsonDecode(utf8.decode(response.bodyBytes));
       var list = ListRecipes.fromJson(parse);
@@ -138,7 +138,24 @@ Future<List<RecipesCard>> getallRecipes() async {
     return List.empty();
   }
 }
-
+Future<ListRecipes2?> getRecipeVisitor(int page, int limit, int id) async {
+  final url = "http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/api/recipes/getallbyuserIDdifferent/$id?page=$page&limit=$limit";
+  final http.Client httpClient = http.Client();
+  try{
+    final response = await httpClient.get(Uri.parse(url));
+    print(response.statusCode);
+    if(response.statusCode == 200) {
+      Map<String, dynamic> parse = jsonDecode(utf8.decode(response.bodyBytes));
+      var list = ListRecipes2.fromJson(parse);
+      return list;
+    } else {
+      return null;
+    }
+  } catch(exception) {
+    print('Exception sending api : '+exception.toString());
+    return null;
+  }
+}
 Future<List<Category>> getCategory() async {
   try {
     final response = await http.get(Uri.parse('$GET_CATEGORY'));
@@ -297,8 +314,7 @@ Future<List<RRecipesCard>> recommendRecipe() async {
           HttpHeaders.acceptHeader: "*/*",
           HttpHeaders.authorizationHeader: token
         });
-    print(response.body);
-    print(response.statusCode);
+    print(response.statusCode.toString() +"get recommend");
     if (response.statusCode == 200) {
       final responseData = json.decode(utf8.decode(response.bodyBytes)).cast<Map<String, dynamic>>();
       final List<RRecipesCard> recommend = responseData.map<RRecipesCard>((json) => RRecipesCard.fromJson(json)).toList();

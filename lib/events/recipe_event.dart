@@ -1,8 +1,9 @@
 import 'package:vegetarian/blocs/recipe_blocs.dart';
 
 class RecipeFetchEvent extends RecipeBloc{
+  final String lastPage;
   final int recipeID;
-  RecipeFetchEvent(this.recipeID);
+  RecipeFetchEvent(this.recipeID, this.lastPage);
 }
 
 class RecipeCommentEvent extends RecipeBloc{

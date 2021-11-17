@@ -1,24 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vegetarian/Screens/BlogScreen/blog_screen.dart';
-import 'package:vegetarian/Screens/Recipes/create_recipe_screen.dart';
+import 'package:vegetarian/Screens/MainScreen/main_screen.dart';
 import 'package:vegetarian/Screens/Recipes/recipe_screen.dart';
-import 'package:vegetarian/Screens/UserProfile/profile_menu_screen.dart';
 import 'package:vegetarian/blocs/blog_bloc.dart';
-import 'package:vegetarian/blocs/create_recipe_bloc.dart';
+import 'package:vegetarian/blocs/home_blocs.dart';
 import 'package:vegetarian/blocs/liked_bloc.dart';
-import 'package:vegetarian/blocs/profile_menu_blocs.dart';
 import 'package:vegetarian/blocs/recipe_blocs.dart';
-import 'package:vegetarian/blocs/user_recipes_bloc.dart';
 import 'package:vegetarian/constants/constants.dart';
 import 'package:vegetarian/events/blog_event.dart';
-import 'package:vegetarian/events/create_recipe_events.dart';
-import 'package:vegetarian/events/profile_menu_events.dart';
+import 'package:vegetarian/events/home_events.dart';
 import 'package:vegetarian/events/recipe_event.dart';
-import 'package:vegetarian/events/user_recipes_events.dart';
 import 'package:vegetarian/states/liked_state.dart';
-import 'package:vegetarian/states/user_recipes_state.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 class UserLikedScreen extends StatefulWidget {
   UserLikedScreen({Key? key}) : super(key: key);
@@ -41,6 +34,17 @@ class _UserLikedScreenState extends State<UserLikedScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back), onPressed: () {
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => BlocProvider(
+              create: (context) =>
+              HomeBloc()..add(HomeFetchEvent()),
+              child: MyHomePage(token: '123',
+              ),
+            )));
+          },
+          ),
           bottom: const TabBar(
             tabs: [
               Tab(icon: Icon(Icons.book)),
@@ -71,7 +75,7 @@ class _UserLikedScreenState extends State<UserLikedScreen> {
                                     builder: (context) => BlocProvider(
                                       create: (context) => RecipeBloc()
                                         ..add(RecipeFetchEvent(
-                                            state.recipes[index].recipeId)),
+                                            state.recipes[index].recipeId,"userlike")),
                                       child: RecipeScreen(),
                                     )));
                           },
