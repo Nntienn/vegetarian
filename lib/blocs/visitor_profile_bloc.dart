@@ -20,7 +20,7 @@ class VisitorProfileBloc extends Bloc<VisitorProfileEvent, VisitorProfileState> 
           //2.yield CommentStateSuccess
           final list = await getRecipeVisitor(1, NUMBER_OF_COMMENTS_PER_PAGE,event.Id);
           final recipes = list!.listResult;
-          final page = list!.page;
+          final page = list.page;
           final user = await getUserbyID(event.Id);
           yield VisitorProfileStateSuccess(
               recipes: recipes,

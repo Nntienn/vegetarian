@@ -1,6 +1,5 @@
-import 'package:vegetarian/models/list_ingredient_name.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vegetarian/models/nearby.dart';
-import 'package:vegetarian/models/weekly_menu.dart';
 
 
 class NearByState {
@@ -11,6 +10,7 @@ class NearByStateInitial extends NearByState {
 }
 class NearByStateFailure extends NearByState {}
 class NearByStateSuccess extends NearByState {
+  final LatLng currentLocation;
   final List<Result> result;
-  NearByStateSuccess( this.result);
+  NearByStateSuccess( this.result, this.currentLocation);
 }

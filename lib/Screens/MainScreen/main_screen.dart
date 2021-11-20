@@ -398,14 +398,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
                 return IconButton(
                     onPressed: () {
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => BlocProvider(
-                      //               create: (context) => ProfileMenuBloc()
-                      //                 ..add(ProfileMenuFetchEvent()),
-                      //               child: ProfileMenuScreen(),
-                      //             )));
                       showDialog(
                         context: context,
                         builder: (BuildContext context) =>

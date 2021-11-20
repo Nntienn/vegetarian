@@ -17,7 +17,7 @@ class NearBy {
 
   factory NearBy.fromRawJson(String str) => NearBy.fromJson(json.decode(str));
 
-  String toRawJson() => json.encode(toJson());
+
 
   factory NearBy.fromJson(Map<String, dynamic> json) => NearBy(
     htmlAttributions: List<dynamic>.from(json["html_attributions"].map((x) => x)),
@@ -25,11 +25,6 @@ class NearBy {
     status: json["status"],
   );
 
-  Map<String, dynamic> toJson() => {
-    "html_attributions": List<dynamic>.from(htmlAttributions.map((x) => x)),
-    "results": List<dynamic>.from(results.map((x) => x.toJson())),
-    "status": status,
-  };
 }
 
 class Result {
@@ -40,18 +35,16 @@ class Result {
     required this.iconBackgroundColor,
     required this.iconMaskBaseUri,
     required this.name,
-    required this.openingHours,
+    required  this.openingHours,
     required this.photos,
     required this.placeId,
     required this.plusCode,
-    required this.priceLevel,
     required this.rating,
     required this.reference,
     required this.scope,
     required this.types,
     required this.userRatingsTotal,
     required this.vicinity,
-    required this.permanentlyClosed,
   });
 
   String businessStatus;
@@ -60,22 +53,21 @@ class Result {
   String iconBackgroundColor;
   String iconMaskBaseUri;
   String name;
-  OpeningHours openingHours;
-  List<Photo> photos;
+  OpeningHours? openingHours;
+  List<Photo>? photos;
   String placeId;
   PlusCode plusCode;
-  int priceLevel;
   double rating;
   String reference;
   String scope;
   List<String> types;
   int userRatingsTotal;
   String vicinity;
-  bool permanentlyClosed;
+
 
   factory Result.fromRawJson(String str) => Result.fromJson(json.decode(str));
 
-  String toRawJson() => json.encode(toJson());
+
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
     businessStatus: json["business_status"],
@@ -84,40 +76,19 @@ class Result {
     iconBackgroundColor: json["icon_background_color"],
     iconMaskBaseUri: json["icon_mask_base_uri"],
     name: json["name"],
-    openingHours: OpeningHours.fromJson(json["opening_hours"]),
-    photos: List<Photo>.from(json["photos"].map((x) => Photo.fromJson(x))),
+    openingHours: json["opening_hours"] == null ? null : OpeningHours.fromJson(json["opening_hours"]),
+    photos: json["photos"] == null ? null : List<Photo>.from(json["photos"].map((x) => Photo.fromJson(x))),
     placeId: json["place_id"],
     plusCode: PlusCode.fromJson(json["plus_code"]),
-    priceLevel: json["price_level"] == null ? null : json["price_level"],
     rating: json["rating"].toDouble(),
     reference: json["reference"],
     scope: json["scope"],
     types: List<String>.from(json["types"].map((x) => x)),
     userRatingsTotal: json["user_ratings_total"],
     vicinity: json["vicinity"],
-    permanentlyClosed: json["permanently_closed"] == null ? null : json["permanently_closed"],
   );
 
-  Map<String, dynamic> toJson() => {
-    "business_status": businessStatus,
-    "geometry": geometry.toJson(),
-    "icon": icon,
-    "icon_background_color": iconBackgroundColor,
-    "icon_mask_base_uri": iconMaskBaseUri,
-    "name": name,
-    "opening_hours": openingHours == null ? null : openingHours.toJson(),
-    "photos": List<dynamic>.from(photos.map((x) => x.toJson())),
-    "place_id": placeId,
-    "plus_code": plusCode.toJson(),
-    "price_level": priceLevel == null ? null : priceLevel,
-    "rating": rating,
-    "reference": reference,
-    "scope": scope,
-    "types": List<dynamic>.from(types.map((x) => x)),
-    "user_ratings_total": userRatingsTotal,
-    "vicinity": vicinity,
-    "permanently_closed": permanentlyClosed == null ? null : permanentlyClosed,
-  };
+
 }
 
 class Geometry {
@@ -215,7 +186,7 @@ class OpeningHours {
 class Photo {
   Photo({
     required this.height,
-    required  this.htmlAttributions,
+    required this.htmlAttributions,
     required this.photoReference,
     required this.width,
   });

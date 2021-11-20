@@ -13,8 +13,9 @@ class NearByBloc extends Bloc<NearByBloc, NearByState> {
     if (event is NearByFetchEvent) {
       List<Result>? result = await getNearby(event.pos);
       if (result != null) {
+        print(result.toString() + "AAAAAAAAAAAAAAAAAA");
         print("co menu");
-        yield NearByStateSuccess(result);
+        yield NearByStateSuccess(result, event.pos);
       }
     }
   }

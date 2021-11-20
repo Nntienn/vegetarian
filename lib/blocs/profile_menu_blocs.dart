@@ -24,10 +24,10 @@ class ProfileMenuBloc extends Bloc<ProfileMenuBloc, ProfileMenuState> {
           if(path==null){
             path = [];
           }
-          path!.add(event.path);
+          path.add(event.path);
           print(path);
           yield
-          ProfileMenuStateSuccess(path!,event.lastPageId,user: user!);
+          ProfileMenuStateSuccess(path,event.lastPageId,user: user!);
         } else {
           yield ProfileMenuStateFailure();
         }
