@@ -57,7 +57,7 @@ class User {
         aboutMe: json["about_me"] == null ? "" : json["about_me"],
         phoneNumber: json["phone_number"] == null ? "" : json["phone_number"],
         profileImage:
-            json["profile_image"] == null ? "" : json["profile_image"],
+            json["profile_image"] == null ? "https://as2.ftcdn.net/v2/jpg/01/18/03/35/500_F_118033506_uMrhnrjBWBxVE9sYGTgBht8S5liVnIeY.jpg" : json["profile_image"],
         country: json["country"] == null ? "" : json["country"],
         facebookLink:
             json["facebook_link"] == null ? "" : json["facebook_link"],

@@ -155,17 +155,6 @@ class _FavoriteIngredientsState extends State<FavoriteIngredientsScreen> {
               }
               return SizedBox();
             }),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: RaisedButton(
-                onPressed: () {},
-                child: const Text('Bottom Button!',
-                    style: TextStyle(fontSize: 20)),
-                color: Colors.blue,
-                textColor: Colors.white,
-                elevation: 5,
-              ),
-            ),
           ],
         ),
       ),

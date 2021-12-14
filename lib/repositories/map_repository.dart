@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vegetarian/models/nearby.dart';
 import 'package:http/http.dart' as http;
-Future<List<Result>> getNearby(LatLng pos) async {
+Future<List<Result>> getNearby(LatLng pos, int radius, String keyword, String type) async {
   try {
     double lat = pos.latitude;
     double lng = pos.longitude;
     print(lat);
     print("Lng" +lng.toString());
-    var request = http.Request('GET', Uri.parse('https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=Vergan+Restaurant&location=$lat%2C$lng&radius=2000&type=restaurant&key=AIzaSyBfXYjDiG-0BcHv_ZmnXN2zaX9Av3fDSmM'));
+    var request = http.Request('GET', Uri.parse('https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=$keyword&location=$lat%2C$lng&radius=$radius&type=$type&key=AIzaSyCjh4wjUFsNKfo6pcPMiBGLQi5_bziD3ig'));
     print("https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=Vergan+Restaurant&location=$lat%2C$lng&radius=2000&type=restaurant&key=AIzaSyBfXYjDiG-0BcHv_ZmnXN2zaX9Av3fDSmM");
     http.StreamedResponse response = await request.send();
     print(response.statusCode);
@@ -30,3 +30,4 @@ Future<List<Result>> getNearby(LatLng pos) async {
     return List.empty();
   }
 }
+

@@ -23,13 +23,15 @@ class LoginBloc extends Bloc<LoginBloc, LoginState> {
         );
       } else {
         // try {
-        bool isLogin = await login(event.email, event.password);
-        if (isLogin) {
+        String? isLogin = await login(event.email, event.password);
+        if (isLogin == "success") {
           // String? phone = await LocalData().getPhone();
           String? token = await LocalData().getToken();
           yield LoginStateSuccess();
+        }else if(isLogin == "Wrong Email or Password"){
+          yield LoginStateWrong(errorMessage: isLogin!);
         } else {
-          yield LoginStateFailure(errorMessage: 'Incorrect email or password');
+          yield LoginStateFailure(errorMessage: isLogin.toString());
         }
       }
       //   catch (exception) {

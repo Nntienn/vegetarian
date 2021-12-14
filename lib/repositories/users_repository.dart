@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vegetarian/constants/constants.dart';
+import 'package:vegetarian/models/draft.dart';
 import 'package:vegetarian/models/is_liked.dart';
 import 'package:vegetarian/models/liked.dart';
 import 'package:vegetarian/models/list_ingredient_name.dart';
@@ -143,7 +144,7 @@ Future<bool?> updateUserPassword(
       return false;
     }
   } catch (exception) {
-    print('edit User information error: ' + exception.toString());
+    print('pass User information error: ' + exception.toString());
     return false;
   }
 }
@@ -305,7 +306,7 @@ Future<bool?> updateUserBodyIndex(
       return false;
     }
   } catch (exception) {
-    print('edit User information error: ' + exception.toString());
+    print('editbody User information error: ' + exception.toString());
     return false;
   }
 }
@@ -370,7 +371,96 @@ Future<bool> commentRecipe(int recipeId, String content) async {
     return false;
   }
 }
+Future<bool> commentBlog(int blogId, String content) async {
+  try {
+    String? token = await LocalData().getToken();
+    Map<String?, dynamic> payload = Jwt.parseJwt(token!);
+    int uid = payload['id'];
+    token = 'Bearer ' + token;
+    var params = {
+      "user_id": uid,
+      "blog_id": blogId,
+      "content": content
+    };
+    final response = await http.post(Uri.parse('$COMMENT_BLOG'),
+        body: json.encode(params),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.acceptHeader: "*/*",
+          HttpHeaders.authorizationHeader: token
+        }
+    );
+    print(response.statusCode.toString());
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('ngu');
+      return false;
+    }
+  } catch (exception) {
+    print(exception.toString());
+    return false;
+  }
+}
+Future<bool> commentVideo(int blogId, String content) async {
+  try {
+    String? token = await LocalData().getToken();
+    Map<String?, dynamic> payload = Jwt.parseJwt(token!);
+    int uid = payload['id'];
+    token = 'Bearer ' + token;
+    var params = {
+      "user_id": uid,
+      "video_id": blogId,
+      "content": content
+    };
+    final response = await http.post(Uri.parse('$COMMENT_VIDEO'),
+        body: json.encode(params),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.acceptHeader: "*/*",
+          HttpHeaders.authorizationHeader: token
+        }
+    );
+    print(response.statusCode.toString());
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('ngu');
+      return false;
+    }
+  } catch (exception) {
+    print(exception.toString());
+    return false;
+  }
+}
+Future<Draft?> getUserDraft() async {
+  try {
+    String? token = await LocalData().getToken();
+    Map<String?, dynamic> payload = Jwt.parseJwt(token!);
+    int uid = payload['id'];
+    token = 'Bearer ' + token;
+    final response = await http.get(Uri.parse('$GET_USER_DRAFT$uid'),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.acceptHeader: "*/*",
+          HttpHeaders.authorizationHeader: token
+        }
+    );
+    print('$GET_USER_DRAFT$uid');
+    print(response.statusCode.toString());
+    if (response.statusCode == 200) {
 
+      Map<String, dynamic> parse = jsonDecode(utf8.decode(response.bodyBytes));
+      var list = Draft.fromJson(parse);
+      return list;
+    } else {
+      return null;
+    }
+  } catch (exception) {
+    print(exception.toString());
+    return null;
+  }
+}
 Future<bool> checkLike(int recipeId) async {
   try {
     String? token = await LocalData().getToken();
@@ -427,6 +517,144 @@ Future<bool> deleteComment(
   }
 }
 
+Future<bool> deleteBlogComment(
+    int commentId
+    ) async {
+  try {
+    String? token = await LocalData().getToken();
+    Map<String?, dynamic> payload = Jwt.parseJwt(token!);
+    token = 'Bearer ' + token;
+    final response = await http.delete(Uri.parse('$DELETE_COMMENT$commentId/blog'),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.acceptHeader: "*/*",
+          HttpHeaders.authorizationHeader: token
+        });
+    print(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (exception) {
+    print('Delete Comment error: ' + exception.toString());
+    return false;
+  }
+}
+Future<bool> deleteVideoComment(
+    int commentId
+    ) async {
+  try {
+    String? token = await LocalData().getToken();
+    Map<String?, dynamic> payload = Jwt.parseJwt(token!);
+    token = 'Bearer ' + token;
+    final response = await http.delete(Uri.parse('$DELETE_COMMENT$commentId/video'),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.acceptHeader: "*/*",
+          HttpHeaders.authorizationHeader: token
+        });
+    print(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (exception) {
+    print('Delete Comment error: ' + exception.toString());
+    return false;
+  }
+}
+Future<bool> editComment(String content,
+    int commentId
+    ) async {
+  try {
+    var params = {
+      "content": content,
+    };
+    String? token = await LocalData().getToken();
+    Map<String?, dynamic> payload = Jwt.parseJwt(token!);
+    token = 'Bearer ' + token;
+    final response = await http.put(Uri.parse('$EDIT_COMMENT$commentId'),
+        body: json.encode(params),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.acceptHeader: "*/*",
+          HttpHeaders.authorizationHeader: token
+        });
+    print(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (exception) {
+    print('Delete Comment error: ' + exception.toString());
+    return false;
+  }
+}
+
+Future<bool> editBlogComment(String content,
+    int commentId
+    ) async {
+  try {
+    var params = {
+      "content": content,
+    };
+    String? token = await LocalData().getToken();
+    Map<String?, dynamic> payload = Jwt.parseJwt(token!);
+    token = 'Bearer ' + token;
+    final response = await http.put(Uri.parse('$EDIT_BLOG_COMMENT$commentId'),
+        body: json.encode(params),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.acceptHeader: "*/*",
+          HttpHeaders.authorizationHeader: token
+        });
+    print(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (exception) {
+    print('Delete Comment error: ' + exception.toString());
+    return false;
+  }
+}
+Future<bool> editVideoComment(String content,
+    int commentId
+    ) async {
+  try {
+    var params = {
+      "content": content,
+    };
+    String? token = await LocalData().getToken();
+    Map<String?, dynamic> payload = Jwt.parseJwt(token!);
+    token = 'Bearer ' + token;
+    final response = await http.put(Uri.parse('$EDIT_VIDEO_COMMENT$commentId'),
+        body: json.encode(params),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.acceptHeader: "*/*",
+          HttpHeaders.authorizationHeader: token
+        });
+    print(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (exception) {
+    print('Delete Comment error: ' + exception.toString());
+    return false;
+  }
+}
 Future<User?> getUser(
     ) async {
   try {
@@ -450,11 +678,10 @@ Future<User?> getUser(
       return null;
     }
   } catch (exception) {
-    print('edit User information error: ' + exception.toString());
+    print('get2 User information error: ' + exception.toString());
     return null;
   }
 }
-
 Future<User?> getUserbyID(int id
     ) async {
   try {
@@ -473,10 +700,11 @@ Future<User?> getUserbyID(int id
       return null;
     }
   } catch (exception) {
-    print('edit User information error: ' + exception.toString());
+    print('get User information error: ' + exception.toString());
     return null;
   }
 }
+
 
 Future<Nutrition?> getUserDailyNutrition( int height, double weight, int typeWorkout, int age, String gender
     ) async {
@@ -574,7 +802,8 @@ Future<ListIngredientName?> getAllergies() async {
           HttpHeaders.authorizationHeader: token
         }
     );
-    print(response.statusCode.toString() +"get list favorite ingredient");
+    print('$GET_USER_ALLERGIES_INGREDIENT$uid');
+    print(response.statusCode.toString() +"get list GET_USER_ALLERGIES_INGREDIENT");
     if (response.statusCode == 200) {
       Map<String, dynamic> parse = jsonDecode(utf8.decode(response.bodyBytes));
       final list = ListIngredientName.fromJson(parse);
@@ -616,19 +845,20 @@ Future<bool> updateAllergies(ListIngredientName list) async {
   }
 }
 
-Future<WeeklyMenu?> generateWeeklyMenu() async {
+Future<WeeklyMenu?> generateWeeklyMenu(int number) async {
   try {
     String? token = await LocalData().getToken();
     Map<String?, dynamic> payload = Jwt.parseJwt(token!);
     int uid = payload['id'];
     token = 'Bearer ' + token;
-    final response = await http.get(Uri.parse('$GENERATE_WEEKLYMENU?id=$uid'),
+    final response = await http.get(Uri.parse('$GENERATE_WEEKLYMENU?id=$uid&numberRecipe=$number'),
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.acceptHeader: "*/*",
           HttpHeaders.authorizationHeader: token
         }
     );
+    print('$GENERATE_WEEKLYMENU?id=$uid&numberRecipe=$number');
     print(response.statusCode.toString() +"get list favorite ingredient");
     if (response.statusCode == 200) {
       Map<String, dynamic> parse = jsonDecode(utf8.decode(response.bodyBytes));

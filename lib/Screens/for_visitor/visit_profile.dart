@@ -2,15 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:vegetarian/Screens/MainScreen/main_screen.dart';
-import 'package:vegetarian/Screens/Recipes/all_recipes_screen.dart';
 import 'package:vegetarian/Screens/Recipes/recipe_screen.dart';
-import 'package:vegetarian/blocs/home_blocs.dart';
 import 'package:vegetarian/blocs/recipe_blocs.dart';
 import 'package:vegetarian/blocs/visitor_profile_bloc.dart';
-import 'package:vegetarian/events/home_events.dart';
+import 'package:vegetarian/constants/constants.dart';
 import 'package:vegetarian/events/recipe_event.dart';
 import 'package:vegetarian/events/visitor_profile_event.dart';
 import 'package:vegetarian/states/visitor_profile_state.dart';
@@ -299,14 +294,14 @@ class _VisitorProfileState extends State<VisitorProfileScreen>
                                     ),
                                     SizedBox(
                                       height: MediaQuery.of(context).size.height *
-                                          0.025,
+                                          0.01,
                                     ),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        Text('\"' + state.user.aboutMe + '\"',
+                                        Text(state.user.aboutMe,
                                             style: TextStyle(
-                                                fontSize: 12,
+                                                fontSize: 14,
                                                 fontFamily: "Quicksand",
                                                 fontStyle: FontStyle.italic))
                                       ],
@@ -381,6 +376,32 @@ class _VisitorProfileState extends State<VisitorProfileScreen>
                                                       )
                                                   )
                                                   ,
+                                                ),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                      begin: Alignment.bottomCenter,
+                                                      end: Alignment.topCenter,
+                                                      colors: [
+                                                        Colors.black.withOpacity(0.7),
+                                                        // Colors.black.withOpacity(0.25),
+                                                        Colors.black.withOpacity(0.0),
+                                                        // Colors.black.withOpacity(0.1),
+                                                        // Colors.black.withOpacity(0.0)
+                                                      ],
+                                                    ),
+
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: MediaQuery.of(context).size.width/3,
+                                                  padding: EdgeInsets.all(10),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                    children: [
+                                                      Text(state.recipes[index].recipeTitle, style: TextStyle(color: kPrimaryButtonTextColor,fontWeight: FontWeight.bold),)
+                                                    ],
+                                                  ),
                                                 )
                                               ],
                                             ),

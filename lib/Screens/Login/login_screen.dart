@@ -1,26 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 import 'package:vegetarian/Screens/Login/create_account.dart';
 import 'package:vegetarian/Screens/Login/forgot_password_input_mail.dart';
 import 'package:vegetarian/Screens/MainScreen/main_screen.dart';
 import 'package:vegetarian/Screens/facebook_logged_in_screen.dart';
-import 'package:vegetarian/Screens/logged_in_page.dart';
+import 'package:vegetarian/blocs/bottom_navigation_bloc.dart';
 import 'package:vegetarian/blocs/forgot_password_bloc.dart';
 import 'package:vegetarian/blocs/home_blocs.dart';
 import 'package:vegetarian/blocs/login_blocs.dart';
 import 'package:vegetarian/blocs/register_blocs.dart';
+import 'package:vegetarian/events/bottom_navigation_event.dart';
 import 'package:vegetarian/events/home_events.dart';
 import 'package:vegetarian/events/login_events.dart';
 import 'package:vegetarian/repositories/google_sign_in_api.dart';
 import 'package:vegetarian/states/login_states.dart';
+
+import '../app_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -62,6 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
           color: Colors.green[200],
         ),
         child: ListView(
+          physics: NeverScrollableScrollPhysics(),
           children: [
             SizedBox(
               height: 40,
@@ -74,8 +75,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   Center(
                     child: Image(
                       image: AssetImage('assets/logo.png'),
-                      height: 200,
-                      width: 200,
+                      height: 150,
+                      width: 150,
                     ),
                   ),
                 ],
@@ -84,15 +85,6 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               height: 10,
             ),
-            // Center(
-            //   child: Text(
-            //     "Vegetarian Application",
-            //     style: TextStyle(color: Colors.white, fontSize: 18),
-            //   ),
-            // ),
-            // SizedBox(
-            //   height: 30,
-            // ),
             Expanded(
                 child: Container(
               decoration: BoxDecoration(
@@ -188,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(10)),
                           child: Center(
                             child: Text(
-                              "login",
+                              "Login",
                               style: TextStyle(
                                   color: Colors.blueGrey,
                                   fontSize: 15,
@@ -202,22 +194,41 @@ class _LoginScreenState extends State<LoginScreen> {
                       listener: (context, state) {
                         print(state);
                         if (state is LoginStateFailure) {
-                          return _displayTopMotionToast(context, "fail");
+                          // Navigator.pushReplacement(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => BlocProvider(
+                          //           create: (context) =>
+                          //           VerifyBloc()..add(VerifyFetchEvent()),
+                          //           child: VerifyScreen(),
+                          //         )));
+                          return _displayTopMotionToast(context, state.errorMessage);
+
+                        }
+                        if (state is LoginStateWrong) {
+                          return _displayTopMotionToast(context, state.errorMessage);
                         }
                         if (state is LoginEmptyState) {
-                          return _displayTopMotionToast(context, "empty");
+                          return _displayTopMotionToast(context, "UserName or Password Is Empty");
                         }
                         if (state is LoginStateSuccess) {
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => BlocProvider(
+                                  builder: (context) =>
+                                      // BlocProvider<BottomNavigationBloc>(
+                                      //   create: (context) => BottomNavigationBloc(
+                                      //   )..add(AppStarted()),
+                                      //   child: AppScreen(),
+                                      // )
+                                      BlocProvider(
                                     create: (context) =>
                                     HomeBloc()..add(HomeFetchEvent()),
                                     child: MyHomePage(
                                       token: '123',
                                     ),
-                                  )));
+                                  )
+                              ));
                         }
                       },
                       child: ElevatedButton.icon(
@@ -230,7 +241,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           FontAwesomeIcons.google,
                           color: Colors.red,
                         ),
-                        label: Text('Sign in with Goole'),
+                        label: Text('Sign in with Google'),
                         onPressed: signIn,
                       ),
                     ),
@@ -301,28 +312,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _displayTopMotionToast(BuildContext context, String msg) {
-    switch (msg) {
-      case "fail":
         MotionToast.error(
           title: "ERROR",
           titleStyle: TextStyle(fontWeight: FontWeight.bold),
-          description: "Username and password is invalid",
+          description: msg,
           animationType: ANIMATION.FROM_BOTTOM,
           position: MOTION_TOAST_POSITION.BOTTOM,
           width: 300,
         ).show(context);
-        break;
-      case "empty":
-        MotionToast.warning(
-          title: "WARNING",
-          titleStyle: TextStyle(fontWeight: FontWeight.bold),
-          description: "Username and password is not blank",
-          animationType: ANIMATION.FROM_BOTTOM,
-          position: MOTION_TOAST_POSITION.BOTTOM,
-          width: 300,
-        ).show(context);
-        break;
-    }
   }
 
   Future signIn() async {

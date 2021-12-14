@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:vegetarian/models/list_blogs.dart';
-import 'package:vegetarian/models/list_recipes.dart';
-import 'package:vegetarian/models/list_video.dart';
+import 'package:vegetarian/models/blogs_card.dart';
+import 'package:vegetarian/models/recipes_card.dart';
+import 'package:vegetarian/models/video.dart';
 
 class Search {
   Search({
@@ -11,18 +11,18 @@ class Search {
     required this.listVideo,
   });
 
-  List<ListRecipes> listRecipe;
-  List<ListBlogs> listBlog;
-  List<ListVideos> listVideo;
+  List<RecipesCard> listRecipe;
+  List<BlogsCard> listBlog;
+  List<Video> listVideo;
 
   factory Search.fromRawJson(String str) => Search.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
   factory Search.fromJson(Map<String, dynamic> json) => Search(
-    listRecipe: List<ListRecipes>.from(json["listRecipe"].map((x) => ListRecipes.fromJson(x))),
-    listBlog: List<ListBlogs>.from(json["listBlog"].map((x) => ListBlogs.fromJson(x))),
-    listVideo: List<ListVideos>.from(json["listVideo"].map((x) => ListVideos.fromJson(x))),
+    listRecipe: List<RecipesCard>.from(json["listRecipe"].map((x) => RecipesCard.fromJson(x))),
+    listBlog: List<BlogsCard>.from(json["listBlog"].map((x) => BlogsCard.fromJson(x))),
+    listVideo: List<Video>.from(json["listVideo"].map((x) => Video.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {

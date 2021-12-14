@@ -1,4 +1,5 @@
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -161,11 +162,12 @@ class _CreateAccountState extends State<CreateAccount> {
                             child: BlocBuilder<RegisterBloc, RegisterState>(
                               bloc: _registerBloc,
                               builder: (context, state) {
-                                return TextField(
+                                return TextFormField(
                                   onChanged: (value) {
                                     email = value;
                                   },
-                                  onSubmitted: (value) {
+                                  validator: (value) => EmailValidator.validate(value!) ? null : "Please enter a valid email",
+                                  onFieldSubmitted: (value) {
                                     _registerBloc.add(
                                         RegisterOnSubmitEmailEvent(
                                             email: value));

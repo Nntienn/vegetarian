@@ -13,10 +13,19 @@ class UserRecipesBloc extends Bloc<UserRecipesBloc, UserRecipeState> {
   Stream<UserRecipeState> mapEventToState(UserRecipesBloc event) async* {
     if (event is UserRecipesFetchEvent) {
       String? token = await LocalData().getToken();
-      int userId = event.userId;
-      List<RecipesCard> tenRecipes = await getRecipesbyUserID(userId);
+
+      List<RecipesCard> tenRecipes = await getRecipesbyUserID();
       if (token != null) {
         yield UserRecipeStateSuccess(tenRecipes, );
+      }
+    }
+    if (event is SetPrivateEvent) {
+      String? token = await LocalData().getToken();
+      Map<String?, dynamic> payload = Jwt.parseJwt(token!);
+      int userId = payload['id'];
+      bool like = await privateRecipes(event.recipeID);
+      if (like) {
+        yield UserRecipeDeleteStateSuccess(userId);
       }
     }
     if(event is UserRecipesDeleteEvent){

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,12 +17,9 @@ import 'package:vegetarian/blocs/home_blocs.dart';
 import 'package:vegetarian/events/create_recipe_events.dart';
 import 'package:vegetarian/events/home_events.dart';
 import 'package:vegetarian/models/Ingredient.dart';
-import 'package:vegetarian/models/create_recipe.dart';
-
 import 'package:vegetarian/models/category.dart';
-import 'package:vegetarian/models/recipe.dart';
+import 'package:vegetarian/models/create_recipe.dart';
 import 'package:vegetarian/states/create_recipe_state.dart';
-import 'package:cloudinary_public/cloudinary_public.dart';
 
 class CreateRecipeScreen extends StatefulWidget {
   @override
@@ -55,7 +53,6 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
   FilePickerResult? file;
   String? link;
 
-
   Category submitcategory = Category(categoryId: 1, categoryName: '');
 
   int? categoryid = 1;
@@ -80,7 +77,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
 
   static Future<CloudinaryResponse> uploadFileOnCloudinary(
       {required String filePath,
-        required CloudinaryResourceType resourceType}) async {
+      required CloudinaryResourceType resourceType}) async {
     String result;
     CloudinaryResponse response = new CloudinaryResponse(
         assetId: '',
@@ -91,7 +88,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
         originalFilename: "");
     try {
       var cloudinary =
-      CloudinaryPublic('thuanhoang2108', 'se8jipuu', cache: false);
+          CloudinaryPublic('thuanhoang2108', 'se8jipuu', cache: false);
       response = await cloudinary.uploadFile(
         CloudinaryFile.fromFile(filePath, resourceType: resourceType),
       );
@@ -120,7 +117,8 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
       });
       print(filePath);
       file = result;
-    } on PlatformException catch (e, s) {} on Exception catch (e, s) {}
+    } on PlatformException catch (e, s) {
+    } on Exception catch (e, s) {}
   }
 
   @override
@@ -172,18 +170,21 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                     SizedBox(
                       height: 10,
                     ),
-                    TextFormField(
-                      onFieldSubmitted: (value) {
-                        setState(() {
-                          this.title.text = value;
-                        });
-                      },
-                      controller: title,
-                      decoration: InputDecoration(
-                        hintText: 'E.g Coob Salad',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide: BorderSide(),
+                    Container(
+                      height: MediaQuery.of(context).size.height / 20,
+                      child: TextFormField(
+                        onFieldSubmitted: (value) {
+                          setState(() {
+                            this.title.text = value;
+                          });
+                        },
+                        controller: title,
+                        decoration: InputDecoration(
+                          hintText: 'E.g Coob Salad',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide: BorderSide(),
+                          ),
                         ),
                       ),
                     ),
@@ -220,8 +221,13 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                                   textStyle: const TextStyle(fontSize: 10),
                                 )),
                           ),
-                          Container(child: Text(filePath.split('/').last ,overflow: TextOverflow.ellipsis,)
-                          ,width: MediaQuery.of(context).size.width * 0.55,)
+                          Container(
+                            child: Text(
+                              filePath.split('/').last,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            width: MediaQuery.of(context).size.width * 0.55,
+                          )
                         ],
                       ),
                     ),
@@ -241,7 +247,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                       if (state is CreateRecipeStateLoadSuccess) {
                         // categoryName = state.list[0];
                         return Container(
-                          // width: 200,
+                          height: MediaQuery.of(context).size.height / 20,
                           padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.black38),
@@ -291,6 +297,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                       children: [
                         Container(
                           width: 70,
+                          height: MediaQuery.of(context).size.height / 20,
                           padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.black38),
@@ -315,6 +322,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                         ),
                         Container(
                           width: 110,
+                          height: MediaQuery.of(context).size.height / 20,
                           padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.black38),
@@ -365,7 +373,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                           defaultSelected: difficulty,
                           enableButtonWrap: true,
                           autoWidth: true,
-                          height: 50,
+                          height: MediaQuery.of(context).size.height / 20,
                           unSelectedColor: Theme.of(context).canvasColor,
                           buttonLables: listDifficultys,
                           buttonValues: listDifficulty,
@@ -392,6 +400,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                       children: [
                         Container(
                           width: 70,
+                          height: MediaQuery.of(context).size.height / 20,
                           padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.black38),
@@ -419,6 +428,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                           width: 10,
                         ),
                         Container(
+                          height: MediaQuery.of(context).size.height / 20,
                           width: 70,
                           padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                           decoration: BoxDecoration(
@@ -460,6 +470,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Container(
+                          height: MediaQuery.of(context).size.height / 20,
                           width: 70,
                           padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                           decoration: BoxDecoration(
@@ -488,6 +499,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                           width: 10,
                         ),
                         Container(
+                          height: MediaQuery.of(context).size.height / 20,
                           width: 70,
                           padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                           decoration: BoxDecoration(
@@ -529,6 +541,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Container(
+                          height: MediaQuery.of(context).size.height / 20,
                           width: 70,
                           padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                           decoration: BoxDecoration(
@@ -557,6 +570,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                           width: 10,
                         ),
                         Container(
+                          height: MediaQuery.of(context).size.height / 20,
                           width: 70,
                           padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                           decoration: BoxDecoration(
@@ -636,6 +650,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                       Row(
                         children: [
                           Container(
+                            height: MediaQuery.of(context).size.height / 20,
                             width: MediaQuery.of(context).size.width * 0.2,
                             child: TextFormField(
                               keyboardType: TextInputType.number,
@@ -657,6 +672,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                             width: 10,
                           ),
                           Container(
+                            height: MediaQuery.of(context).size.height / 20,
                             width: MediaQuery.of(context).size.width * 0.55,
                             child: TextFormField(
                               keyboardType: TextInputType.text,
@@ -707,7 +723,9 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                             children: [
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.15,
-                                child: Text(listIngredient[index].amountInMg.toString()),
+                                child: Text(listIngredient[index]
+                                    .amountInMg
+                                    .toString()),
                               ),
                               Container(
                                   width:
@@ -815,7 +833,8 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                                 _stepvalidate = true;
                               } else {
                                 setState(() {
-                                  listStep.add(new  CreateRecipeStep(stepContent: stepcontent.text));
+                                  listStep.add(new CreateRecipeStep(
+                                      stepContent: stepcontent.text));
                                   _stepvalidate = false;
                                   stepcontent.clear();
                                 });
@@ -831,7 +850,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                 Container(
                   height: MediaQuery.of(context).size.height * 0.3,
                   child: ListView.builder(
-                    itemCount: recipeStepContents.length,
+                    itemCount: listStep.length,
                     itemBuilder: (context, index) {
                       return SingleChildScrollView(
                         child: Container(
@@ -848,7 +867,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                               ),
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.4,
-                                child: Text(recipeStepContents[index]),
+                                child: Text(listStep[index].stepContent),
                               ),
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.1,
@@ -860,7 +879,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                                   ),
                                   onPressed: () {
                                     setState(() {
-                                      recipeStepContents.removeAt(index);
+                                      listStep.removeAt(index);
                                     });
                                     print(listIngredient[0].ingredientName);
                                   },
@@ -881,6 +900,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
             content: Container(
               height: MediaQuery.of(context).size.height * 0.65,
               child: ListView(
+
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -890,59 +910,99 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                               fontWeight: FontWeight.bold, fontSize: 20)),
                     ],
                   ),
-                  filePath != null ? Image.file(File(filePath),width: 108, height: 192,) : SizedBox(),
-                  Text(submitcategory.categoryName),
-                  Text(portion.toString() + " " + serving!),
-                  Text("Difficulty: " + difficultys),
-                  Text("Preptime: " +
-                      (dprephour! * 60 + dprepminute!).toString() +
-                      " minutes"),
-                  Text("Bakingtime: " +
-                      (dbakinghour! * 60 + dbakingminute!).toString() +
-                      " minutes"),
-                  Text("Preptime: " +
-                      (dresthour! * 60 + drestminute!).toString() +
-                      " minutes"),
+                  filePath != null
+                      ? Container(
+                    margin: EdgeInsets.only(top:10,bottom: 10),
+                          child: Image.file(
+                          File(filePath),
+                          width: 108,
+                          height: 192,
+                        ))
+                      : SizedBox(),
+                  Row(
+                    children: [
+                      Text(
+                        "Category: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(submitcategory.categoryName),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Serving: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(portion.toString() + " " + serving!),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Difficulty: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(difficultys),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Preptime: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text((dprephour! * 60 + dprepminute!).toString() +
+                          " minutes"),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Bakingtime: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text((dbakinghour! * 60 + dbakingminute!).toString() +
+                          " minutes"),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Preptime: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text((dresthour! * 60 + drestminute!).toString() +
+                          " minutes"),
+                    ],
+                  ),
+                  Text(
+                    "Ingredients: ",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   ListView.builder(
                       physics: ClampingScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: listIngredient.length,
                       itemBuilder: (context, index) => Container(
-                            child: Text((listIngredient[index].amountInMg.toString() +
-                                "mg") +
+                            child: Text(("- " +
+                                    listIngredient[index]
+                                        .amountInMg
+                                        .toString() +
+                                    "mg ") +
                                 listIngredient[index].ingredientName),
                           )),
+                  Text("How to",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                   ListView.builder(
                       physics: ClampingScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: 1,
+                      itemCount: listStep.length,
                       itemBuilder: (context, index) {
-                        for (int i = 0; i < recipeStepContents.length; i++) {
-                          print(submitContent);
-                          print(recipeStepContents.length.toString());
-                          if (i == 0) {
-                            submitContent = ('<h2>Step' +
-                                (i + 1).toString() +
-                                '</h2><p>' +
-                                recipeStepContents[i] +
-                                '</p>');
-                          } else {
-                            submitContent = (submitContent! +
-                                '<h2>Step' +
-                                (i + 1).toString() +
-                                '</h2><p>' +
-                                recipeStepContents[i] +
-                                '</p>');
-                          }
-                        }
-                        ;
                         return Container(
                           child: Row(
                             children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                child: Html(data: submitContent),
-                              ),
+                              Text("Step: " + (index + 1).toString(),style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                              Text(listStep[index].stepContent,style: TextStyle(fontSize: 12),)
                             ],
                           ),
                         );
@@ -995,12 +1055,9 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                       recipeDifficulty: difficulty.toString(),
                       portionType: portion.toString(),
                       portionSize: portiontype.toString(),
-                      prepTimeMinutes:
-                          (dprephour! * 60 + dprepminute!),
-                      bakingTimeMinutes:
-                          (dbakinghour! * 60 + dbakingminute!),
-                      restingTimeMinutes:
-                          (dresthour! * 60 + drestminute!),
+                      prepTimeMinutes: (dprephour! * 60 + dprepminute!),
+                      bakingTimeMinutes: (dbakinghour! * 60 + dbakingminute!),
+                      restingTimeMinutes: (dresthour! * 60 + drestminute!),
                       ingredients: listIngredient)));
                 }
               } else {

@@ -11,11 +11,11 @@ class NearByBloc extends Bloc<NearByBloc, NearByState> {
   @override
   Stream<NearByState> mapEventToState(NearByBloc event) async* {
     if (event is NearByFetchEvent) {
-      List<Result>? result = await getNearby(event.pos);
+      List<Result>? result = await getNearby(event.pos,event.radius, event.keywword, event.type);
       if (result != null) {
         print(result.toString() + "AAAAAAAAAAAAAAAAAA");
         print("co menu");
-        yield NearByStateSuccess(result, event.pos);
+        yield NearByStateSuccess(result, event.pos, event.keywword, event.type);
       }
     }
   }

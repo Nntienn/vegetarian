@@ -11,6 +11,12 @@ class LoginStateFailure extends LoginState {
   final String errorMessage;
   LoginStateFailure({required this.errorMessage});
 }
+
+class LoginStateWrong extends LoginState {
+  final String errorMessage;
+  LoginStateWrong({required this.errorMessage});
+}
+
 class LoginStateSuccess extends LoginState {
   // final String firstName;
   // final String lastName;

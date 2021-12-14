@@ -12,5 +12,7 @@ class NearByStateFailure extends NearByState {}
 class NearByStateSuccess extends NearByState {
   final LatLng currentLocation;
   final List<Result> result;
-  NearByStateSuccess( this.result, this.currentLocation);
+  final String keywword;
+  final String type;
+  NearByStateSuccess( this.result, this.currentLocation, this.keywword, this.type, );
 }

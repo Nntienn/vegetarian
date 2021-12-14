@@ -34,6 +34,8 @@ class _UserLikedScreenState extends State<UserLikedScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: kPrimaryButtonTextColor,
+          foregroundColor: Colors.black,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back), onPressed: () {
             Navigator.pushReplacement(
@@ -157,7 +159,7 @@ class _UserLikedScreenState extends State<UserLikedScreen> {
                                     builder: (context) => BlocProvider(
                                       create: (context) => BlogBloc()
                                         ..add(BlogFetchEvent(
-                                            state.blogs[index].blogId)),
+                                            state.blogs[index].blogId,"liked")),
                                       child: BlogScreen(),
                                     )));
                           },

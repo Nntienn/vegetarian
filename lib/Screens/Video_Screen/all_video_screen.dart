@@ -133,7 +133,7 @@ class _AllVideosScreenState extends State<AllVideosScreen> {
                                       builder: (context) => BlocProvider(
                                         create: (context) => VideoBloc()
                                           ..add(VideoFetchEvent(
-                                              state.videos.listResult[index].id)),
+                                              state.videos.listResult[index].id,"allVideo")),
                                         child: VideoScreen(),
                                       )));
                             },

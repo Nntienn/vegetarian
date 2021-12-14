@@ -140,7 +140,7 @@ class _AllBlogsScreenState extends State<AllBlogsScreen> {
                                       builder: (context) => BlocProvider(
                                         create: (context) => BlogBloc()
                                           ..add(BlogFetchEvent(
-                                              state.blogs[index].blogId)),
+                                              state.blogs[index].blogId, "allblog")),
                                         child: BlogScreen(),
                                       )));
                             },

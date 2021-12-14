@@ -1,5 +1,7 @@
-import 'dart:io';
+import 'dart:ui';
 
+import 'package:cloudinary_public/cloudinary_public.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,15 +11,16 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vegetarian/Screens/MainScreen/main_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vegetarian/Screens/Recipes/user_recipes_screen.dart';
 import 'package:vegetarian/blocs/edit_recipe_bloc.dart';
-import 'package:vegetarian/blocs/home_blocs.dart';
+import 'package:vegetarian/blocs/user_recipes_bloc.dart';
+import 'package:vegetarian/constants/constants.dart';
 import 'package:vegetarian/events/edit_recipe_events.dart';
-import 'package:vegetarian/events/home_events.dart';
+import 'package:vegetarian/events/user_recipes_events.dart';
 import 'package:vegetarian/models/Ingredient.dart';
-import 'package:vegetarian/models/create_recipe.dart';
 import 'package:vegetarian/models/category.dart';
-import 'package:cloudinary_public/cloudinary_public.dart';
+import 'package:vegetarian/models/create_recipe.dart';
 import 'package:vegetarian/models/edit_recipe.dart';
 import 'package:vegetarian/states/edit_recipe_state.dart';
 
@@ -65,13 +68,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
   List<int> minutes = [];
   List<int> minutes1 = [];
   List<String> recipeStepContents = [];
-  List<String> listDifficultys = [
-    'Easy',
-    'Medium',
-    'Hard',
-    'Gordon Ramsay',
-    'Your Mom'
-  ];
+  List<String> listDifficultys = ['Beginner', 'Novice', 'Cook', 'Chef', 'Gordon Ramsay'];
   List<Ingredient> listIngredient = [];
   List<CreateRecipeStep> listStep = [];
   List<String> categoryTitle = [];
@@ -162,135 +159,57 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
               }
 
               return Container(
-                height: MediaQuery.of(context).size.height * 0.65,
+                height: MediaQuery.of(context).size.height * 0.7,
                 child: ListView(children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Basic',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 30),
-                            )
-                          ],
-                        ),
-                      ),
-                      Text(
-                        'Name your recipe*',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        onFieldSubmitted: (value) {
-                          setState(() {
-                            this.title.text = value;
-                          });
-                        },
-                        enabled: false,
-                        controller: title,
-                        decoration: InputDecoration(
-                          hintText: 'E.g Coob Salad',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                            borderSide: BorderSide(),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        'Thumbnail',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        child: Row(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(width: 1),
-                                  borderRadius: BorderRadius.circular(10.0)),
-                              width: 80,
-                              height: 25,
-                              child: TextButton(
-                                  onPressed: selectFile,
-                                  child: Text(
-                                    'Choose Image',
-                                    style: TextStyle(fontSize: 10),
-                                  ),
-                                  style: TextButton.styleFrom(
-                                    padding: const EdgeInsets.all(0),
-                                    primary: Colors.black,
-                                    textStyle: const TextStyle(fontSize: 10),
-                                  )),
+                      Stack(children: [
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.2,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(state.recipe.recipeThumbnail),
+                              fit: BoxFit.cover,
                             ),
-                            filePath.contains("/data/user")
-                                ? Image.file(
-                                    File(filePath),
-                                    width: 108,
-                                    height: 192,
-                                  )
-                                : Image.network(
-                                    filePath,
-                                    width: 108,
-                                    height: 192,
-                                  ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        'Category',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        // width: 200,
-                        padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black38),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15))),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<Category>(
-                            hint: new Text(submitcategory.categoryName),
-                            value: category,
-                            icon: Icon(Icons.keyboard_arrow_down),
-                            items: state.list.map((Category items) {
-                              return DropdownMenuItem(
-                                  value: items,
-                                  child: Text(items.categoryName));
-                            }).toList(),
-                            onTap: () {
-                              print(this.category!.categoryId);
-                            },
-                            onChanged: (value) {
-                              setState(() {
-                                this.category = value;
-                                this.submitcategory = value!;
-                                print(this.category!.categoryId);
-                              });
-                            },
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+                            child: Container(
+                              decoration: new BoxDecoration(
+                                  color: Colors.black.withOpacity(0.2)),
+                            ),
                           ),
                         ),
-                      ),
+                        Container(
+                          alignment: Alignment.bottomLeft,
+                          height: MediaQuery.of(context).size.height * 0.2,
+                          padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.75,
+                                    child: Text(
+                                      state.recipe.recipeTitle,
+                                      style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                      ]),
                       SizedBox(
                         height: 10,
                       ),
@@ -302,14 +221,12 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       SizedBox(
                         height: 10,
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
                             width: 70,
+                            height: MediaQuery.of(context).size.height / 20,
                             padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black38),
@@ -336,6 +253,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                           ),
                           Container(
                             width: 110,
+                            height: MediaQuery.of(context).size.height / 20,
                             padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black38),
@@ -379,33 +297,31 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       SizedBox(
                         height: 10,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomRadioButton(
-                            margin: EdgeInsets.fromLTRB(0, 0, 00, 10),
-                            shapeRadius: 15,
-                            spacing: 10,
-                            radius: 15,
-                            enableShape: true,
-                            elevation: 0,
-                            defaultSelected: difficulty,
-                            enableButtonWrap: true,
-                            autoWidth: true,
-                            height: 50,
-                            unSelectedColor: Theme.of(context).canvasColor,
-                            buttonLables: listDifficultys,
-                            buttonValues: listDifficulty,
-                            radioButtonValue: (value) {
-                              difficulty = value as int;
-                              state.recipe.recipeDifficulty = difficulty;
-                              difficultys = listDifficultys[difficulty - 1];
-                              print(difficulty);
-                            },
-                            selectedColor:
-                                Theme.of(context).colorScheme.secondary,
-                          ),
-                        ],
+                      CustomRadioButton(
+                        wrapAlignment: WrapAlignment.start,
+                        horizontal: false,
+                        unSelectedBorderColor: Colors.black12,
+                        selectedBorderColor: Colors.black12,
+                        margin: EdgeInsets.fromLTRB(0, 0, 25, 10),
+                        shapeRadius: 15,
+                        spacing: 10,
+                        radius: 15,
+                        enableShape: true,
+                        elevation: 0,
+                        defaultSelected: difficulty,
+                        enableButtonWrap: true,
+                        autoWidth: true,
+                        height: MediaQuery.of(context).size.height / 20,
+                        unSelectedColor: Theme.of(context).canvasColor,
+                        buttonLables: listDifficultys,
+                        buttonValues: listDifficulty,
+                        radioButtonValue: (value) {
+                          difficulty = value as int;
+                          state.recipe.recipeDifficulty = difficulty;
+                          difficultys = listDifficultys[difficulty - 1];
+                          print(difficulty);
+                        },
+                        selectedColor: kPrimaryButtonColorPicked,
                       ),
                       Text(
                         'Prep Time*',
@@ -420,6 +336,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                         children: [
                           Container(
                             width: 70,
+                            height: MediaQuery.of(context).size.height / 20,
                             padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black38),
@@ -455,6 +372,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                           ),
                           Container(
                             width: 70,
+                            height: MediaQuery.of(context).size.height / 20,
                             padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black38),
@@ -502,6 +420,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                         children: [
                           Container(
                             width: 70,
+                            height: MediaQuery.of(context).size.height / 20,
                             padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black38),
@@ -537,6 +456,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                           ),
                           Container(
                             width: 70,
+                            height: MediaQuery.of(context).size.height / 20,
                             padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black38),
@@ -584,6 +504,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                         children: [
                           Container(
                             width: 70,
+                            height: MediaQuery.of(context).size.height / 20,
                             padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black38),
@@ -619,6 +540,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                           ),
                           Container(
                             width: 70,
+                            height: MediaQuery.of(context).size.height / 20,
                             padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black38),
@@ -722,111 +644,113 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                 }
 
                 listIngredient = state.recipe.ingredients;
-                return Column(
-                  children: <Widget>[
-                    Container(
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Ingredients',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 30),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.2,
-                                child: Text(
-                                  'Amount',
+                return Container(
+                  height: MediaQuery.of(context).size.height*0.7,
+                  child: ListView(
+                    children: <Widget>[
+                      Container(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Ingredients',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15),
-                                ),
-                              ),
-                              Spacer(),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.55,
-                                child: Text(
-                                  'Ingerdient*',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.2,
-                                child: TextFormField(
-                                  keyboardType: TextInputType.number,
-                                  controller: amount,
-                                  decoration: InputDecoration(
-                                    hintText: '',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      borderSide: BorderSide(),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text('Mg'),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.55,
-                                child: TextFormField(
-                                  keyboardType: TextInputType.text,
-                                  controller: ingredient,
-                                  decoration: InputDecoration(
-                                    hintText: 'Add ingredient. e.g.flour',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      borderSide: BorderSide(),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            child: TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  listIngredient.add(new Ingredient(
-                                      ingredientName: ingredient.text,
-                                      amountInMg: int.parse(amount.text)));
-                                  ingredient.clear();
-                                  amount.clear();
-                                });
-                                print(listIngredient[0].ingredientName);
-                              },
-                              child: Text('Add to your list'),
+                                      fontWeight: FontWeight.bold, fontSize: 30),
+                                )
+                              ],
                             ),
-                          )
-                        ],
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width * 0.2,
+                                  child: Text(
+                                    'Amount',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                                Spacer(),
+                                Container(
+                                  width: MediaQuery.of(context).size.width * 0.55,
+                                  child: Text(
+                                    'Ingerdient*',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width * 0.2,
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    controller: amount,
+                                    decoration: InputDecoration(
+                                      hintText: '',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15.0),
+                                        borderSide: BorderSide(),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text('g'),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width * 0.55,
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.text,
+                                    controller: ingredient,
+                                    decoration: InputDecoration(
+                                      hintText: 'Add ingredient. e.g.flour',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15.0),
+                                        borderSide: BorderSide(),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              child: TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    listIngredient.add(new Ingredient(
+                                        ingredientName: ingredient.text,
+                                        amountInMg: int.parse(amount.text)));
+                                    ingredient.clear();
+                                    amount.clear();
+                                  });
+                                  print(listIngredient[0].ingredientName);
+                                },
+                                child: Text('Add to your list'),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    Container(
-                      height: 300,
-                      child: ListView.builder(
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
                         itemCount: listIngredient.length,
                         itemBuilder: (context, index) {
                           return SingleChildScrollView(
@@ -843,17 +767,17 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                                         0.15,
                                     child: Text(listIngredient[index]
                                         .amountInMg
-                                        .toString()),
+                                        .toString(),style: TextStyle(fontSize: 15),),
                                   ),
                                   Container(
                                       width: MediaQuery.of(context).size.width *
                                           0.1,
-                                      child: Text('mg')),
+                                      child: Text('g',style: TextStyle(fontSize: 15),)),
                                   Container(
                                     width:
                                         MediaQuery.of(context).size.width * 0.4,
                                     child: Text(
-                                        listIngredient[index].ingredientName),
+                                        listIngredient[index].ingredientName,style: TextStyle(fontSize: 15),),
                                   ),
                                   Container(
                                     width:
@@ -894,8 +818,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                           );
                         },
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               }
               return SizedBox();
@@ -966,97 +890,100 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   }
                 }
                 ;
-                return Column(
-                  children: <Widget>[
-                    Container(
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Recipe Steps',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 30),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Add a Step',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.85,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.2,
-                                child: TextFormField(
-                                  onTap: () {
-                                    setState(() {
-                                      _stepvalidate = false;
-                                    });
-                                  },
-                                  maxLines: 10,
-                                  keyboardType: TextInputType.text,
-                                  controller: stepcontent,
-                                  decoration: InputDecoration(
-                                    errorText: _stepvalidate
-                                        ? 'Value Can\'t Be Empty'
-                                        : null,
-                                    hintText:
-                                        'What need to be done in this step?',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      borderSide: BorderSide(),
+                return Container(
+                  height: MediaQuery.of(context).size.height*0.7,
+                  child: ListView(
+                    children: <Widget>[
+                      Container(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Recipe Steps',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 30),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Add a Step',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 15),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width * 0.85,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.15,
+                                  child: TextFormField(
+                                    onTap: () {
+                                      setState(() {
+                                        _stepvalidate = false;
+                                      });
+                                    },
+                                    maxLines: 10,
+                                    keyboardType: TextInputType.text,
+                                    controller: stepcontent,
+                                    decoration: InputDecoration(
+                                      errorText: _stepvalidate
+                                          ? 'Value Can\'t Be Empty'
+                                          : null,
+                                      hintText:
+                                          'What need to be done in this step?',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15.0),
+                                        borderSide: BorderSide(),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            child: TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  if (stepcontent.text.isEmpty) {
-                                    _stepvalidate = true;
-                                  } else {
-                                    setState(() {
-                                      listStep.add(new CreateRecipeStep(
-                                          stepContent: stepcontent.text));
-                                      _stepvalidate = false;
-                                      stepcontent.clear();
-                                    });
-                                  }
-                                });
-                              },
-                              child: Text('Add to your list'),
+                              ],
                             ),
-                          )
-                        ],
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.3,
+                              child: TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (stepcontent.text.isEmpty) {
+                                      _stepvalidate = true;
+                                    } else {
+                                      setState(() {
+                                        listStep.add(new CreateRecipeStep(
+                                            stepContent: stepcontent.text));
+                                        _stepvalidate = false;
+                                        stepcontent.clear();
+                                      });
+                                    }
+                                  });
+                                },
+                                child: Text('Add to your list',style: TextStyle(fontSize: 15),),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      child: ListView.builder(
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
                         itemCount: listStep.length,
                         itemBuilder: (context, index) {
                           return SingleChildScrollView(
                             child: Container(
+                              padding: EdgeInsets.only(bottom: 15, top: 15),
                               decoration: BoxDecoration(
                                   border: Border(
                                 bottom: BorderSide(
@@ -1067,12 +994,12 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                                   Container(
                                     width: MediaQuery.of(context).size.width *
                                         0.15,
-                                    child: Text('Step ' + index.toString()),
+                                    child: Text('Step ' + (index+1).toString(),style: TextStyle(fontSize: 15),),
                                   ),
                                   Container(
                                     width:
-                                        MediaQuery.of(context).size.width * 0.4,
-                                    child: Text(listStep[index].stepContent),
+                                        MediaQuery.of(context).size.width * 0.5,
+                                    child: Text(listStep[index].stepContent,style: TextStyle(fontSize: 15),),
                                   ),
                                   Container(
                                     width:
@@ -1101,9 +1028,9 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                                       ),
                                       onPressed: () {
                                         setState(() {
-                                          recipeStepContents.removeAt(index);
+                                          listStep.removeAt(index);
+                                          state.recipe.steps.removeAt(index);
                                         });
-                                        print(listIngredient[0].ingredientName);
                                       },
                                     ),
                                   )
@@ -1113,8 +1040,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                           );
                         },
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               }
               return SizedBox();
@@ -1123,50 +1050,150 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
             isActive: currentStep >= 3,
             title: Text(''),
             content: Container(
-              height: MediaQuery.of(context).size.height * 0.65,
+              height: MediaQuery.of(context).size.height * 0.7,
               child: ListView(
+                shrinkWrap: true,
                 children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height / 4.5,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(filePath),
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    title.text,
+                    style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(title.text,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20)),
+                      Icon(
+                        FontAwesomeIcons.book,
+                        size: MediaQuery.of(context).size.width * 0.025,
+                      ),
+                      SizedBox(width: 10,),
+                      Text(
+                        "Category: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(submitcategory.categoryName),
                     ],
                   ),
-                  filePath.contains("/data/user")
-                      ? Image.file(
-                          File(filePath),
-                          width: 108,
-                          height: 192,
-                        )
-                      : Image.network(
-                          filePath,
-                          width: 108,
-                          height: 192,
-                        ),
-                  Text(submitcategory.categoryName),
-                  Text(portion.toString() + " " + serving),
-                  Text("Difficulty: " + difficultys),
-                  Text("Preptime: " +
-                      (dprephour! * 60 + dprepminute!).toString() +
-                      " minutes"),
-                  Text("Bakingtime: " +
-                      (dbakinghour! * 60 + dbakingminute!).toString() +
-                      " minutes"),
-                  Text("Preptime: " +
-                      (dresthour! * 60 + drestminute!).toString() +
-                      " minutes"),
+                  Row(
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.disease,
+                        size: MediaQuery.of(context).size.width * 0.025,
+                      ),
+                      SizedBox(width: 10,),
+                      Text(
+                        "Serving: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(portion.toString() + " " + serving),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.fire,
+                        size: MediaQuery.of(context).size.width * 0.025,
+                      ),
+                      SizedBox(width: 10,),
+                      Text(
+                        "Difficulty: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(listDifficultys[difficulty - 1]),
+                    ],
+                  ),
+                  SizedBox(height: 20,),
+                  Row(
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.solidClock,
+                        size: MediaQuery.of(context).size.width * 0.025,
+                      ),
+                      SizedBox(width: 10,),
+                      Text(
+                        "Preptime: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text((dprephour! * 60 + dprepminute!).toString() +
+                          " minutes"),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.solidClock,
+                        size: MediaQuery.of(context).size.width * 0.025,
+                      ),
+                      SizedBox(width: 10,),
+                      Text(
+                        "Bakingtime: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text((dbakinghour! * 60 + dbakingminute!).toString() +
+                          " minutes"),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.solidClock,
+                        size: MediaQuery.of(context).size.width * 0.025,
+                      ),
+                      SizedBox(width: 10,),
+                      Text(
+                        "Preptime: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text((dresthour! * 60 + drestminute!).toString() +
+                          " minutes"),
+                    ],
+                  ),
+                  SizedBox(height: 20,),
+                  Row(
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.leaf,
+                        size: MediaQuery.of(context).size.width * 0.025,
+                      ),
+                      SizedBox(width: 10,),
+                      Text(
+                        "Ingredients: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                   ListView.builder(
                       physics: ClampingScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: listIngredient.length,
                       itemBuilder: (context, index) => Container(
-                            child: Text(
-                                listIngredient[index].amountInMg.toString() +
-                                    "mg " +
-                                    listIngredient[index].ingredientName),
+                            child: Text(("- " +
+                                    listIngredient[index]
+                                        .amountInMg
+                                        .toString() +
+                                    "mg ") +
+                                listIngredient[index].ingredientName),
                           )),
+                  SizedBox(height: 20,),
+                  Text(
+                    "How to cook",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
                   ListView.builder(
                       physics: ClampingScrollPhysics(),
                       shrinkWrap: true,
@@ -1174,24 +1201,30 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       itemBuilder: (context, index) {
                         return Container(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.5,
-                                  child: Text(
-                                    "Step" + index.toString(),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width*0.2,
+                                      child: Text(
+                                     (index + 1).toString() + "/" + listStep.length.toString(),
                                     style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 25),
+                                        fontSize: 15, fontWeight: FontWeight.bold),
                                   )),
-                              Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.5,
-                                  child: Text(
-                                    listStep[index].stepContent,
-                                    style: TextStyle(fontSize: 15),
-                                  )),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width*0.8,
+                                    child: Text(
+                                      listStep[index].stepContent,
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ],
                           ),
                         );
@@ -1205,11 +1238,13 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: kPrimaryButtonTextColor,
+        foregroundColor: Colors.black,
         title: Text('Edit Recipe'),
       ),
       body: Theme(
         data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(primary: Colors.greenAccent)),
+            colorScheme: ColorScheme.light(primary: kPrimaryButtonColor2)),
         child: Container(
           width: MediaQuery.of(context).size.width,
           child: Stepper(
@@ -1231,34 +1266,45 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                         setState(() {
                           link = response.secureUrl;
                         });
-                        _EditRecipeBloc.add(EditRecipeEvent(EditRecipe(
-                            recipeCategoriesId: submitcategory.categoryId.toString(),
+                        _EditRecipeBloc.add(EditRecipeEvent(
+                            EditRecipe(
+                                recipeCategoriesId:
+                                    submitcategory.categoryId.toString(),
+                                recipeTitle: title.text,
+                                recipeThumbnail: link.toString(),
+                                steps: listStep,
+                                recipeDifficulty: difficulty.toString(),
+                                portionSize: portion.toString(),
+                                portionType: portiontype.toString(),
+                                prepTimeMinutes:
+                                    (dprephour! * 60 + dprepminute!),
+                                bakingTimeMinutes:
+                                    (dbakinghour! * 60 + dbakingminute!),
+                                restingTimeMinutes:
+                                    (dresthour! * 60 + drestminute!),
+                                ingredients: listIngredient),
+                            recipeId!));
+                        print(link);
+                      }
+                    }
+                  } else {
+                    _EditRecipeBloc.add(EditRecipeEvent(
+                        EditRecipe(
+                            recipeCategoriesId:
+                                submitcategory.categoryId.toString(),
                             recipeTitle: title.text,
-                            recipeThumbnail: link.toString(),
+                            recipeThumbnail: filePath,
                             steps: listStep,
                             recipeDifficulty: difficulty.toString(),
                             portionSize: portion.toString(),
                             portionType: portiontype.toString(),
                             prepTimeMinutes: (dprephour! * 60 + dprepminute!),
-                            bakingTimeMinutes: (dbakinghour! * 60 + dbakingminute!),
-                            restingTimeMinutes: (dresthour! * 60 + drestminute!),
-                            ingredients: listIngredient), recipeId!));
-                        print(link);
-                      }
-                    }
-                  }else{
-                    _EditRecipeBloc.add(EditRecipeEvent(EditRecipe(
-                        recipeCategoriesId: submitcategory.categoryId.toString(),
-                        recipeTitle: title.text,
-                        recipeThumbnail: filePath,
-                        steps: listStep,
-                        recipeDifficulty: difficulty.toString(),
-                        portionSize: portion.toString(),
-                        portionType: portiontype.toString(),
-                        prepTimeMinutes: (dprephour! * 60 + dprepminute!),
-                        bakingTimeMinutes: (dbakinghour! * 60 + dbakingminute!),
-                        restingTimeMinutes: (dresthour! * 60 + drestminute!),
-                        ingredients: listIngredient),recipeId!));
+                            bakingTimeMinutes:
+                                (dbakinghour! * 60 + dbakingminute!),
+                            restingTimeMinutes:
+                                (dresthour! * 60 + drestminute!),
+                            ingredients: listIngredient),
+                        recipeId!));
                   }
                 }
               } else {
@@ -1272,7 +1318,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
             controlsBuilder: (context, {onStepContinue, onStepCancel}) {
               final isLastStep = currentStep == getSteps().length - 1;
               return Container(
-                margin: EdgeInsets.only(top: 50),
+                margin: EdgeInsets.only(top: 10),
                 child: Row(
                   children: [
                     if (currentStep != 0)
@@ -1289,16 +1335,33 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                             listener: (context, state) {
                               print(state);
                               if (state is EditRecipeStateSuccess) {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => BlocProvider(
-                                              create: (context) => HomeBloc()
-                                                ..add(HomeFetchEvent()),
-                                              child: MyHomePage(
-                                                token: '123',
-                                              ),
-                                            )));
+                                CoolAlert.show(
+                                  context: context,
+                                  type: CoolAlertType.success,
+                                  text: "Edit Profile successful!",
+                                  onConfirmBtnTap: () async {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => BlocProvider(
+                                                  create: (context) =>
+                                                      UserRecipesBloc()
+                                                        ..add(
+                                                            UserRecipesFetchEvent()),
+                                                  child: UserRecipesScreen(),
+                                                )));
+                                  },
+                                );
+                                // Navigator.pushReplacement(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) => BlocProvider(
+                                //               create: (context) => HomeBloc()
+                                //                 ..add(HomeFetchEvent()),
+                                //               child: MyHomePage(
+                                //                 token: '123',
+                                //               ),
+                                //             )));
                               }
                             },
                             child: ElevatedButton(

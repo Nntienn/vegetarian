@@ -9,6 +9,7 @@ import 'package:vegetarian/blocs/edit_basic_profile_bloc.dart';
 import 'package:vegetarian/blocs/profile_menu_blocs.dart';
 import 'package:vegetarian/events/edit_basic_profile_event.dart';
 import 'package:vegetarian/events/profile_menu_events.dart';
+import 'package:vegetarian/repositories/local_data.dart';
 import 'package:vegetarian/states/edit_basic_profile_state.dart';
 
 class EditBasicProfileScreen extends StatefulWidget {
@@ -36,8 +37,37 @@ class _EditBasicProfileState extends State<EditBasicProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
+        // resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          actions: <Widget>[Container(
+            child: GestureDetector(
+              onTap: (){
+                _EditprofileBloc.add(EditProfileEvent(
+                  _firstNameController.text,
+                  _lastNameController.text,
+                  _aboutmeController.text,
+                  _phoneController.text,
+                  _countryController.text,
+                  _facebookController.text,
+                  _instagramController.text,
+                  selectedDate,
+                  _genderController.text,
+                ));
+              },
+              child: Container(
+                height: 70,
+                width: 200,
+                child: Align(
+                  child: Text(
+                    'Save',
+                    style:
+                    TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+
+              ),
+            ),
+          )],
           title: Text(
             'Edit Basic Profile',
             style: TextStyle(color: Colors.amber),
@@ -55,7 +85,7 @@ class _EditBasicProfileState extends State<EditBasicProfileScreen> {
                   MaterialPageRoute(
                       builder: (context) => BlocProvider(
                             create: (context) =>
-                                ProfileMenuBloc()..add(ProfileMenuFetchEvent("",-1)),
+                                ProfileMenuBloc()..add(ProfileMenuFetchEvent("home",-1)),
                             child: ProfileMenuScreen(),
                           )));
             },
@@ -75,7 +105,8 @@ class _EditBasicProfileState extends State<EditBasicProfileScreen> {
               context: context,
               type: CoolAlertType.success,
               text: "Edit Profile successful!",
-              onConfirmBtnTap: (){
+
+              onConfirmBtnTap: () async {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -84,9 +115,11 @@ class _EditBasicProfileState extends State<EditBasicProfileScreen> {
                               create: (context) =>
                               ProfileMenuBloc()
                                 ..add(
-                                    ProfileMenuFetchEvent("",-1)),
+                                    ProfileMenuFetchEvent("home",-1)),
                               child: ProfileMenuScreen(),
                             )));
+                List<String>? path = await LocalData().getPath();
+                print(path);
               },
             );
           }
@@ -187,10 +220,10 @@ class _EditBasicProfileState extends State<EditBasicProfileScreen> {
                       begin: Alignment.topRight,
                       end: Alignment.bottomLeft,
                       colors: [Colors.black54, Color.fromRGBO(0, 41, 102, 1)])),
-              child: Column(
+              child: Stack(
                 children: <Widget>[
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.55,
+                    height: MediaQuery.of(context).size.height * 0.59,
                     child: ListView(
                       children: [
                         Padding(
@@ -219,7 +252,6 @@ class _EditBasicProfileState extends State<EditBasicProfileScreen> {
                                       onFieldSubmitted: (value) {
                                         setState(() {
                                           state.user.aboutMe = value;
-                                          // _heightController.text = value;
                                           print(state.user.aboutMe);
                                         });
                                       },
@@ -717,42 +749,7 @@ class _EditBasicProfileState extends State<EditBasicProfileScreen> {
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: GestureDetector(
-                        onTap: (){
-                          _EditprofileBloc.add(EditProfileEvent(
-                            state.user.firstName,
-                            state.user.lastName,
-                              state.user.aboutMe,
-                              state.user.phoneNumber,
-                              state.user.country,
-                              state.user.facebookLink,
-                              state.user.instagramLink,
-                            selectedDate,
-                              state.user.gender,
-                              ));
-                        },
-                        child: Container(
-                          height: 70,
-                          width: 200,
-                          child: Align(
-                            child: Text(
-                              'Save',
-                              style:
-                                  TextStyle(color: Colors.white70, fontSize: 20),
-                            ),
-                          ),
-                          decoration: BoxDecoration(
-                              color: Colors.deepOrange,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(30),
-                              )),
-                        ),
-                      ),
-                    ),
-                  )
+
                 ],
               ),
             ))

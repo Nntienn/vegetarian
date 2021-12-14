@@ -19,6 +19,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
+      theme: ThemeData(
+        fontFamily: 'Quicksand'
+      ),
       home: BlocProvider(
         create: (context) => HomeBloc()..add(HomeFetchEvent()),
         child: MyHomePage(token: '123',),

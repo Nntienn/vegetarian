@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +20,7 @@ import 'package:vegetarian/blocs/edit_body_bloc.dart';
 import 'package:vegetarian/blocs/home_blocs.dart';
 import 'package:vegetarian/blocs/profile_menu_blocs.dart';
 import 'package:vegetarian/blocs/recipe_blocs.dart';
+import 'package:vegetarian/constants/constants.dart';
 import 'package:vegetarian/events/change_password_event.dart';
 import 'package:vegetarian/events/edit_basic_profile_event.dart';
 import 'package:vegetarian/events/edit_body_event.dart';
@@ -68,7 +71,8 @@ class _ProfileMenuState extends State<ProfileMenuScreen>
   List<String> workRoutine = [
     'Low intensity - office work or similar, no workout.',
     'Average intensity - manual labor and/or semi-regular workouts.',
-    'High intensity - hobbyist athlete and/or daily workouts.'
+    'High intensity - hobbyist athlete and/or daily workouts.',
+    'Extreme intensity - professional athlete.'
   ];
 
   @override
@@ -89,7 +93,7 @@ class _ProfileMenuState extends State<ProfileMenuScreen>
         appBar: AppBar(
             title: Text(
               'Profile',
-              style: TextStyle(color: Colors.amber),
+              style: TextStyle(color: Colors.black),
             ),
             backgroundColor: Colors.transparent,
             elevation: 0.0,
@@ -102,6 +106,7 @@ class _ProfileMenuState extends State<ProfileMenuScreen>
                         color: Colors.black,
                       ),
                       onPressed: () {
+                        print(state.path);
                         if(state.path.last == "recipe"){
                           Navigator.push(
                               context,
@@ -128,6 +133,7 @@ class _ProfileMenuState extends State<ProfileMenuScreen>
                                         ),
                                       )));
                         }
+                        print(state.path);
                         state.path.removeLast();
                         LocalData().savePath(state.path);
                       },
@@ -139,6 +145,31 @@ class _ProfileMenuState extends State<ProfileMenuScreen>
             body: BlocBuilder<ProfileMenuBloc, ProfileMenuState>(
                 builder: (context, state) {
                   if (state is ProfileMenuStateSuccess) {
+                    double bmi = double.parse((state.user.weight/(pow(state.user.height/100, 2))).toStringAsFixed(2));
+                    String bodymass = "";
+                    if(bmi< 16.0){
+                      bodymass = 'Underweight (Severe thinness)';
+                    }else if(16.0< bmi && bmi < 16.9){
+                      bodymass = 'Underweight (Moderate thinness)';
+                    }
+                    else if(17.0<= bmi && bmi <= 18.4){
+                      bodymass = 'Underweight (Mild thinness)';
+                    }
+                    else if(18.5<= bmi && bmi <= 24.9){
+                      bodymass = 'Normal range';
+                    }
+                    else if(25.0<= bmi && bmi <= 29.9){
+                      bodymass = 'Overweight (Pre-obese)';
+                    }
+                    else if(30.0<= bmi && bmi <= 34.9){
+                      bodymass = 'Obese (Class I)';
+                    }
+                    else if(35.0<= bmi && bmi <= 39.9){
+                      bodymass = 'Obese (Class II)';
+                    }
+                    else if(bmi >= 40.0){
+                      bodymass = 'Obese (Class III)';
+                    }
                     Future<void> selectFile() async {
                       CloudinaryResponse response = new CloudinaryResponse(
                           assetId: '',
@@ -298,9 +329,13 @@ class _ProfileMenuState extends State<ProfileMenuScreen>
                               .of(context)
                               .size
                               .height * 0.05,
-                          decoration: BoxDecoration(color: Colors.blue),
+                          decoration: BoxDecoration(color: kPrimaryButtonColor4,),
                           child: TabBar(
-                            indicatorColor: Colors.black,
+                            unselectedLabelColor: Colors.black,
+                            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal, fontFamily: "Quicksand"),
+                            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Quicksand"),
+                            labelColor: kPrimaryButtonColor,
+                            indicatorColor: kPrimaryButtonColor,
                             tabs: <Tab>[
                               Tab(text: 'BASIC'),
                               Tab(text: 'BODY'),
@@ -328,40 +363,59 @@ class _ProfileMenuState extends State<ProfileMenuScreen>
                                 child: Column(
                                   children: [
                                     inforRow(Icon(FontAwesomeIcons.transgender),
-                                        'Gender', state.user.gender),
+                                        'Gender:', state.user.gender),
                                     inforRow(
                                         Icon(FontAwesomeIcons.mapMarkerAlt),
-                                        'Country', state.user.country),
+                                        'Country:', state.user.country),
                                     inforRow(
                                         Icon(FontAwesomeIcons.birthdayCake),
-                                        'Birthday',
+                                        'Birthday:',
                                         format.format(state.user.birthDate) +
                                             " (" +
                                             calculateAge(state.user.birthDate)
                                                 .toString() + " years old)"),
                                     inforRow(Icon(FontAwesomeIcons.phoneAlt),
-                                        'Phone', state.user.phoneNumber),
+                                        'Phone:', state.user.phoneNumber),
                                     state.user.instagramLink != "" ? inforRow(
                                         Icon(FontAwesomeIcons.instagram),
-                                        'Instagram',
+                                        'Instagram:',
                                         state.user.instagramLink.split('/')
                                             .elementAt(state.user.instagramLink
                                             .split('/')
                                             .length - 2)) : SizedBox(),
                                     state.user.facebookLink != "" ? inforRow(
                                         Icon(FontAwesomeIcons.facebook),
-                                        'Gender',
+                                        'Facebook:',
                                         state.user.facebookLink.split('/')
                                             .elementAt(state.user.facebookLink
                                             .split('/')
                                             .length - 2)) : SizedBox(),
+                                    Spacer(),
                                     Align(
                                       alignment: Alignment.bottomCenter,
                                       child: Container(
+                                        margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                        decoration: BoxDecoration(
+                                          color: kPrimaryButtonColor,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(8),
+                                              topRight: Radius.circular(8),
+                                              bottomLeft: Radius.circular(8),
+                                              bottomRight: Radius.circular(8)
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 2,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 2), // changes position of shadow
+                                            ),
+                                          ],
+                                        ),
                                         width: MediaQuery
                                             .of(context)
                                             .size
-                                            .width,
+                                            .width*0.9,
                                         child: TextButton(
                                           onPressed: () {
                                             Navigator.pushReplacement(
@@ -379,17 +433,35 @@ class _ProfileMenuState extends State<ProfileMenuScreen>
                                           },
                                           child: const Text(
                                               'Edit basic profile',
-                                              style: TextStyle(fontSize: 20)),
+                                              style: TextStyle(fontSize: 20, color: Colors.white)),
                                         ),
                                       ),
                                     ),
                                     Align(
                                       alignment: Alignment.bottomCenter,
                                       child: Container(
+                                        margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                        decoration: BoxDecoration(
+                                          color: kPrimaryButtonColor2,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(8),
+                                              topRight: Radius.circular(8),
+                                              bottomLeft: Radius.circular(8),
+                                              bottomRight: Radius.circular(8)
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 2,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 2), // changes position of shadow
+                                            ),
+                                          ],
+                                        ),
                                         width: MediaQuery
                                             .of(context)
                                             .size
-                                            .width,
+                                            .width*0.9,
                                         child: TextButton(
                                           onPressed: () {
                                             Navigator.pushReplacement(
@@ -406,7 +478,7 @@ class _ProfileMenuState extends State<ProfileMenuScreen>
                                                         )));
                                           },
                                           child: const Text('Change Password',
-                                              style: TextStyle(fontSize: 20)),
+                                              style: TextStyle(fontSize: 20,color: Colors.white)),
                                         ),
                                       ),
                                     )
@@ -433,13 +505,34 @@ class _ProfileMenuState extends State<ProfileMenuScreen>
                                         'Work Routine',
                                         workRoutine[state.user.workoutRoutine -
                                             1]) : SizedBox(),
+                                    inforRow(Icon(Icons.height),
+                                        'Your BMI is ' + bmi.toString(),bodymass),
+                                    Spacer(),
                                     Align(
                                       alignment: Alignment.bottomCenter,
                                       child: Container(
+                                        margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                        decoration: BoxDecoration(
+                                          color: kPrimaryButtonColor,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(8),
+                                              topRight: Radius.circular(8),
+                                              bottomLeft: Radius.circular(8),
+                                              bottomRight: Radius.circular(8)
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 2,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 2), // changes position of shadow
+                                            ),
+                                          ],
+                                        ),
                                         width: MediaQuery
                                             .of(context)
                                             .size
-                                            .width,
+                                            .width*0.9,
                                         child: TextButton(
                                           onPressed: () {
                                             Navigator.pushReplacement(
@@ -456,7 +549,7 @@ class _ProfileMenuState extends State<ProfileMenuScreen>
                                                         )));
                                           },
                                           child: const Text('Edit body infor',
-                                              style: TextStyle(fontSize: 20)),
+                                              style: TextStyle(fontSize: 20,color: kPrimaryButtonTextColor)),
                                         ),
                                       ),
                                     )
@@ -525,7 +618,7 @@ class _ProfileMenuState extends State<ProfileMenuScreen>
             width: MediaQuery
                 .of(context)
                 .size
-                .width * 0.6,
+                .width * 0.55,
             child: Text(
               value,
               overflow: TextOverflow.clip,

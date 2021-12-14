@@ -83,9 +83,7 @@ class _InputMailScreenState extends State<InputMailScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(60),
-                          topRight: Radius.circular(60))),
+                      borderRadius: BorderRadius.all(Radius.circular(60))),
                   child: Padding(
                     padding: EdgeInsets.all(20),
                     child: Column(

@@ -1,26 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
-import 'package:vegetarian/Screens/Login/create_account.dart';
 import 'package:vegetarian/Screens/MainScreen/main_screen.dart';
-import 'package:vegetarian/Screens/facebook_logged_in_screen.dart';
-import 'package:vegetarian/Screens/logged_in_page.dart';
 import 'package:vegetarian/blocs/home_blocs.dart';
-import 'package:vegetarian/blocs/login_blocs.dart';
-import 'package:vegetarian/blocs/register_blocs.dart';
 import 'package:vegetarian/blocs/verify_account_bloc.dart';
 import 'package:vegetarian/events/home_events.dart';
-import 'package:vegetarian/events/login_events.dart';
 import 'package:vegetarian/events/verify_account_event.dart';
 import 'package:vegetarian/repositories/google_sign_in_api.dart';
-import 'package:vegetarian/states/login_states.dart';
 import 'package:vegetarian/states/verify_account_state.dart';
 
 class VerifyScreen extends StatefulWidget {

@@ -1,25 +1,35 @@
 // To parse this JSON data, do
 //
-//     final recipesCard = recipesCardFromJson(jsonString);
+//     final listRecommend = listRecommendFromJson(jsonString);
 
 import 'dart:convert';
 
 class ListRecommend {
   ListRecommend({
-    required this.listRecommend,
+    required this.listBody,
+    required this.listSuggest,
   });
 
-  List<RRecipesCard> listRecommend;
+  List<ListBodyElement> listBody;
+  List<ListBodyElement> listSuggest;
 
   factory ListRecommend.fromRawJson(String str) => ListRecommend.fromJson(json.decode(str));
 
+  String toRawJson() => json.encode(toJson());
+
   factory ListRecommend.fromJson(Map<String, dynamic> json) => ListRecommend(
-    listRecommend: List<RRecipesCard>.from(json[""].map((x) => RRecipesCard.fromJson(x))),
+    listBody: List<ListBodyElement>.from(json["listBody"].map((x) => ListBodyElement.fromJson(x))),
+    listSuggest: List<ListBodyElement>.from(json["listSuggest"].map((x) => ListBodyElement.fromJson(x))),
   );
+
+  Map<String, dynamic> toJson() => {
+    "listBody": List<dynamic>.from(listBody.map((x) => x.toJson())),
+    "listSuggest": List<dynamic>.from(listSuggest.map((x) => x.toJson())),
+  };
 }
 
-class RRecipesCard {
-  RRecipesCard({
+class ListBodyElement {
+  ListBodyElement({
     required this.userId,
     required this.recipeTitle,
     required this.recipeThumbnail,
@@ -41,16 +51,16 @@ class RRecipesCard {
   DateTime timeCreated;
   int criteria;
 
-  factory RRecipesCard.fromRawJson(String str) => RRecipesCard.fromJson(json.decode(str));
+  factory ListBodyElement.fromRawJson(String str) => ListBodyElement.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory RRecipesCard.fromJson(Map<String, dynamic> json) => RRecipesCard(
+  factory ListBodyElement.fromJson(Map<String, dynamic> json) => ListBodyElement(
     userId: json["user_id"],
-    recipeTitle: json["recipe_title"],
-    recipeThumbnail: json["recipe_thumbnail"]  == null ? "" : json["recipe_thumbnail"],
-    firstName: json["first_name"],
-    lastName: json["last_name"],
+    recipeTitle: json["recipe_title"] == null ? "": json["recipe_title"],
+    recipeThumbnail: json["recipe_thumbnail"] == null ? "https://picsum.photos/536/354": json["recipe_thumbnail"],
+    firstName: json["first_name"] == null ? "": json["first_name"],
+    lastName: json["last_name"] == null ? "": json["last_name"],
     recipeId: json["recipe_id"],
     totalLike: json["totalLike"],
     timeCreated: DateTime.parse(json["time_created"]),

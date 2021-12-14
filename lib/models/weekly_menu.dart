@@ -36,10 +36,12 @@ class Menu {
   Menu({
     required this.date,
     required this.listWeeklyRecipe,
+    required this.listSnack
   });
 
   DateTime date;
   List<ListWeeklyRecipe> listWeeklyRecipe;
+  List<ListWeeklyRecipe> listSnack;
 
   factory Menu.fromRawJson(String str) => Menu.fromJson(json.decode(str));
 
@@ -48,11 +50,13 @@ class Menu {
   factory Menu.fromJson(Map<String, dynamic> json) => Menu(
     date: DateTime.parse(json["date"]),
     listWeeklyRecipe: List<ListWeeklyRecipe>.from(json["listRecipe"].map((x) => ListWeeklyRecipe.fromJson(x))),
+    listSnack: List<ListWeeklyRecipe>.from(json["listSnack"].map((x) => ListWeeklyRecipe.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "date": date.toIso8601String(),
     "listRecipe": List<dynamic>.from(listWeeklyRecipe.map((x) => x.toJson())),
+    "listSnack": List<dynamic>.from(listSnack.map((x) => x.toJson())),
   };
 }
 
@@ -77,9 +81,9 @@ class ListWeeklyRecipe {
 
   factory ListWeeklyRecipe.fromJson(Map<String, dynamic> json) => ListWeeklyRecipe(
     recipeId: json["recipe_id"],
-    recipeTitle: json["recipe_title"],
+    recipeTitle: json["recipe_title"]== null ?  "":json["recipe_title"],
     recipeThumbnail: json["recipe_thumbnail"]== null ?  "":json["recipe_thumbnail"],
-    mealOfDay: json["meal_of_day"],
+    mealOfDay: json["meal_of_day"]== null ?  "":json["meal_of_day"],
     calo: json["calo"],
   );
 

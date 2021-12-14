@@ -38,10 +38,10 @@ class RecipesCard {
   String toRawJson() => json.encode(toJson());
 
   factory RecipesCard.fromJson(Map<String, dynamic> json) => RecipesCard(
-    recipeTitle: json["recipe_title"],
+    recipeTitle: json["recipe_title"]== null ? "https://picsum.photos/536/354":json["recipe_title"],
     recipeThumbnail: json["recipe_thumbnail"]== null ? "":json["recipe_thumbnail"],
-    firstName: json["first_name"],
-    lastName: json["last_name"],
+    firstName: json["first_name"]== null ? "":json["first_name"],
+    lastName: json["last_name"]== null ? "":json["last_name"],
     recipeId: json["recipe_id"],
     totalLike: json["totalLike"],
     timeCreated: DateTime.parse(json["time_created"]),

@@ -22,7 +22,8 @@ class _EditBodyState extends State<EditBodyScreen> {
   List<String> workRoutine = [
     'Low intensity - office work or similar, no workout.',
     'Average intensity - manual labor and/or semi-regular workouts.',
-    'High intensity - hobbyist athlete and/or daily workouts.'
+    'High intensity - hobbyist athlete and/or daily workouts.',
+    'Extreme intensity - professional athlete.'
   ];
 
   @override
@@ -53,7 +54,7 @@ class _EditBodyState extends State<EditBodyScreen> {
                   MaterialPageRoute(
                       builder: (context) => BlocProvider(
                             create: (context) =>
-                                ProfileMenuBloc()..add(ProfileMenuFetchEvent("",-1)),
+                                ProfileMenuBloc()..add(ProfileMenuFetchEvent("home",-1)),
                             child: ProfileMenuScreen(),
                           )));
             },
@@ -79,7 +80,7 @@ class _EditBodyState extends State<EditBodyScreen> {
                 MaterialPageRoute(
                     builder: (context) => BlocProvider(
                           create: (context) =>
-                              ProfileMenuBloc()..add(ProfileMenuFetchEvent("",-1)),
+                              ProfileMenuBloc()..add(ProfileMenuFetchEvent("home",-1)),
                           child: ProfileMenuScreen(),
                         )));
           },

@@ -19,7 +19,7 @@ class HomeStateSuccess extends HomeState{
   final List<RecipesCard> Bestecipes;
   final List<BlogsCard> blogs;
   final Listvideo videos;
-  final List<RRecipesCard> recommends;
+  final ListRecommend? recommends;
   final User user;
   HomeStateSuccess(this.token, this.recipes, this.Bestecipes, this.blogs, this.videos, this.recommends, this.user);
 }

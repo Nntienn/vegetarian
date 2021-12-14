@@ -26,6 +26,9 @@ class Recipe {
   Nutrition nutrition;
   List<Ingredient> ingredients;
   int totalLike;
+  bool isPrivate;
+  int status;
+  bool isLike;
 
   Recipe({
     required this.recipeId,
@@ -47,6 +50,9 @@ class Recipe {
     required this.nutrition,
     required this.ingredients,
     required this.totalLike,
+    required this.isPrivate,
+    required this.status,
+    required this.isLike,
   });
 
   factory Recipe.fromRawJson(String str) => Recipe.fromJson(json.decode(str));
@@ -73,6 +79,9 @@ class Recipe {
     nutrition: Nutrition.fromJson(json["nutrition"]),
     ingredients: List<Ingredient>.from(json["ingredients"].map((x) => Ingredient.fromJson(x))),
     totalLike: json["totalLike"],
+    isPrivate: json["is_private"],
+    status: json["status"],
+    isLike: json["is_like"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -95,6 +104,9 @@ class Recipe {
     // "nutrition": nutrition.toJson(),
     "ingredients": List<dynamic>.from(ingredients.map((x) => x.toJson())),
     "totalLike": totalLike,
+    "is_private": isPrivate,
+    "status": status,
+    "is_like": isLike,
   };
 }
 

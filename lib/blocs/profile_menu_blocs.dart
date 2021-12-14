@@ -11,6 +11,7 @@ class ProfileMenuBloc extends Bloc<ProfileMenuBloc, ProfileMenuState> {
 
   @override
   Stream<ProfileMenuState> mapEventToState(ProfileMenuBloc event) async* {
+
     if (event is ProfileMenuFetchEvent) {
       try {
         String? token = await LocalData().getToken();

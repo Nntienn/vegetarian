@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:vegetarian/Screens/BlogScreen/blog_screen.dart';
-import 'package:vegetarian/Screens/Recipes/recipe_screen.dart';
 import 'package:vegetarian/blocs/blog_bloc.dart';
-import 'package:vegetarian/blocs/recipe_blocs.dart';
 import 'package:vegetarian/blocs/user_blogs_bloc.dart';
-import 'package:vegetarian/blocs/user_recipes_bloc.dart';
 import 'package:vegetarian/constants/constants.dart';
 import 'package:vegetarian/events/blog_event.dart';
-import 'package:vegetarian/events/recipe_event.dart';
 import 'package:vegetarian/states/user_blogs_state.dart';
-import 'package:vegetarian/states/user_recipes_state.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class UserBlogsScreen extends StatefulWidget {
   UserBlogsScreen({Key? key}) : super(key: key);
@@ -137,18 +135,17 @@ class _UserBlogsScreenState extends State<UserBlogsScreen> {
                                       builder: (context) => BlocProvider(
                                         create: (context) => BlogBloc()
                                           ..add(BlogFetchEvent(
-                                              state.blogs[index].blogId)),
+                                              state.blogs[index].blogId, "userblog")),
                                         child: BlogScreen(),
                                       )));
                             },
                             child: Container(
-                                margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: kPrimaryBoderColor)),
+                                margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                 child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      width: 130.0,
+                                      width: 131.0,
                                       height: 100.0,
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
@@ -156,38 +153,93 @@ class _UserBlogsScreenState extends State<UserBlogsScreen> {
                                               state.blogs[index].blogThumbnail),
                                           fit: BoxFit.cover,
                                         ),
-                                        borderRadius: BorderRadius.circular(10.0),
+                                        borderRadius:
+                                        BorderRadius.circular(10.0),
                                         border: Border.all(
                                           color: Colors.white,
                                         ),
                                       ),
                                     ),
                                     Container(
-                                      width:
-                                      MediaQuery.of(context).size.width * 0.6,
-                                      padding:
-                                      const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.58,
+                                      padding: const EdgeInsets.fromLTRB(
+                                          10, 0, 0, 0),
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.start,
                                         crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                         children: [
                                           Text(state.blogs[index].blogTitle,
                                               style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: kPrimaryTextColor),
+                                                  fontSize: 15,
+                                                  fontFamily: "Quicksand",
+                                                  fontWeight: FontWeight.bold),
                                               overflow: TextOverflow.fade),
+                                          // Text(
+                                          //   state.blogs[index].blogSubtitle,
+                                          //   overflow: TextOverflow.ellipsis,
+                                          //   style: TextStyle(fontSize: 12),
+                                          // ),
+                                          state.blogs[index].status == 1 ? Text("Pending",style: TextStyle(color: Colors.yellowAccent),)
+                                              : state.blogs[index].status == 2? Text("Aprroved",style: TextStyle(color: Colors.lightGreen),)
+                                              : Text("Rejected",style: TextStyle(color: Colors.redAccent),),
                                           Text(
                                             state.blogs[index].firstName +
                                                 ' ' +
                                                 state.blogs[index].lastName,
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                color: kPrimaryTextColor),
+                                            style: TextStyle(fontSize: 12),
                                           ),
+                                          Text(
+                                            DateTime.now()
+                                                .difference(state
+                                                .blogs[index]
+                                                .timeCreated)
+                                                .inDays <
+                                                1
+                                                ? timeago.format(
+                                                state.blogs[index]
+                                                    .timeCreated,
+                                                locale: 'en')
+                                                : DateFormat('dd-MM-yyyy')
+                                                .format(state.blogs[index]
+                                                .timeCreated),
+                                            // state.blogs[index].timeCreated,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                child: Text(
+                                                  state.blogs[index].totalLike
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      fontFamily: "Quicksand",
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                      FontWeight.bold,
+                                                      fontSize: 15),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              state.blogs[index].isLike == true
+                                                  ? Icon(
+                                                FontAwesomeIcons
+                                                    .solidHeart,
+                                                color: Colors.red,
+                                                size: 15,
+                                              )
+                                                  : Icon(
+                                                FontAwesomeIcons.heart,
+                                                color: Colors.black,
+                                                size: 15,
+                                              )
+                                            ],
+                                          )
                                         ],
-                                      ), 
+                                      ),
                                     ),
                                   ],
                                 )),

@@ -134,18 +134,21 @@ class _UploadVideoScreenState extends State<UploadVideoScreen> {
               SizedBox(
                 height: 10,
               ),
-              TextFormField(
-                onFieldSubmitted: (value) {
-                  setState(() {
-                    this.title.text = value;
-                  });
-                },
-                controller: title,
-                decoration: InputDecoration(
-                  hintText: 'E.g Coob Salad',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                    borderSide: BorderSide(),
+              Container(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                child: TextFormField(
+                  onFieldSubmitted: (value) {
+                    setState(() {
+                      this.title.text = value;
+                    });
+                  },
+                  controller: title,
+                  decoration: InputDecoration(
+                    hintText: 'E.g Coob Salad',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                      borderSide: BorderSide(),
+                    ),
                   ),
                 ),
               ),

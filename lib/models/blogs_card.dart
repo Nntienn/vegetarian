@@ -35,39 +35,43 @@ class BlogsCard {
   int userId;
   bool isLike;
 
-  factory BlogsCard.fromRawJson(String str) => BlogsCard.fromJson(json.decode(str));
+  factory BlogsCard.fromRawJson(String str) =>
+      BlogsCard.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
   factory BlogsCard.fromJson(Map<String, dynamic> json) => BlogsCard(
-    blogTitle: json["blog_title"],
-    blogThumbnail: json["blog_thumbnail"],
-    blogContent: json["blog_content"],
-    firstName: json["first_name"],
-    lastName: json["last_name"],
-    blogSubtitle: json["blog_subtitle"],
-    blogId: json["blog_id"],
-    totalLike: json["totalLike"],
-    timeCreated: DateTime.parse(json["time_created"]),
-    status: json["status"],
-    isPrivate: json["is_private"],
-    userId: json["user_id"],
-    isLike: json["is_like"],
-  );
+        blogTitle: json["blog_title"]== null ? "":json["blog_title"],
+        blogThumbnail: json["blog_thumbnail"] == null
+            ? "https://picsum.photos/536/354"
+            : json["blog_thumbnail"],
+        blogContent: json["blog_content"]== null ? "":json["blog_content"],
+        firstName: json["first_name"]== null ? "":json["first_name"],
+        lastName: json["last_name"]== null ? "":json["last_name"],
+        blogSubtitle:
+            json["blog_subtitle"] == null ? "" : json["blog_subtitle"],
+        blogId: json["blog_id"],
+        totalLike: json["totalLike"],
+        timeCreated: DateTime.parse(json["time_created"]),
+        status: json["status"],
+        isPrivate: json["is_private"],
+        userId: json["user_id"],
+        isLike: json["is_like"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "blog_title": blogTitle,
-    "blog_thumbnail": blogThumbnail,
-    "blog_content": blogContent,
-    "first_name": firstName,
-    "last_name": lastName,
-    "blog_subtitle": blogSubtitle,
-    "blog_id": blogId,
-    "totalLike": totalLike,
-    "time_created": timeCreated.toIso8601String(),
-    "status": status,
-    "is_private": isPrivate,
-    "user_id": userId,
-    "is_like": isLike,
-  };
+        "blog_title": blogTitle,
+        "blog_thumbnail": blogThumbnail,
+        "blog_content": blogContent,
+        "first_name": firstName,
+        "last_name": lastName,
+        "blog_subtitle": blogSubtitle,
+        "blog_id": blogId,
+        "totalLike": totalLike,
+        "time_created": timeCreated.toIso8601String(),
+        "status": status,
+        "is_private": isPrivate,
+        "user_id": userId,
+        "is_like": isLike,
+      };
 }

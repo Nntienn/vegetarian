@@ -14,7 +14,9 @@ import 'package:vegetarian/Screens/BlogScreen/blog_screen.dart';
 import 'package:vegetarian/Screens/BlogScreen/user_blogs_screen.dart';
 import 'package:vegetarian/Screens/Login/login_screen.dart';
 import 'package:vegetarian/Screens/MainScreen/map_screen.dart';
+import 'package:vegetarian/Screens/MainScreen/search_screen.dart';
 import 'package:vegetarian/Screens/Recipes/all_recipes_screen.dart';
+import 'package:vegetarian/Screens/Recipes/create_recipe_screen.dart';
 import 'package:vegetarian/Screens/Recipes/recipe_screen.dart';
 import 'package:vegetarian/Screens/Recipes/user_recipes_screen.dart';
 import 'package:vegetarian/Screens/UserProfile/allergies_screen.dart';
@@ -22,15 +24,20 @@ import 'package:vegetarian/Screens/UserProfile/check_nutrition_screen.dart';
 import 'package:vegetarian/Screens/UserProfile/favorite_ingredient_screen.dart';
 import 'package:vegetarian/Screens/UserProfile/generate_weekly_menu_screen.dart';
 import 'package:vegetarian/Screens/UserProfile/profile_menu_screen.dart';
+import 'package:vegetarian/Screens/UserProfile/user_draft_screen.dart';
 import 'package:vegetarian/Screens/UserProfile/user_liked_screen.dart';
 import 'package:vegetarian/Screens/Video_Screen/all_video_screen.dart';
+import 'package:vegetarian/Screens/Video_Screen/create_video_screen.dart';
 import 'package:vegetarian/Screens/Video_Screen/user_videos_screen.dart';
+import 'package:vegetarian/Screens/Video_Screen/video_screen.dart';
 import 'package:vegetarian/blocs/all_blogs_bloc.dart';
 import 'package:vegetarian/blocs/all_recipes_bloc.dart';
 import 'package:vegetarian/blocs/all_videos_bloc.dart';
 import 'package:vegetarian/blocs/allergies_bloc.dart';
 import 'package:vegetarian/blocs/blog_bloc.dart';
 import 'package:vegetarian/blocs/check_nutrition_bloc.dart';
+import 'package:vegetarian/blocs/create_recipe_bloc.dart';
+import 'package:vegetarian/blocs/draft_bloc.dart';
 import 'package:vegetarian/blocs/favorite_ingredients_bloc.dart';
 import 'package:vegetarian/blocs/home_blocs.dart';
 import 'package:vegetarian/blocs/liked_bloc.dart';
@@ -38,9 +45,12 @@ import 'package:vegetarian/blocs/login_blocs.dart';
 import 'package:vegetarian/blocs/nearby_bloc.dart';
 import 'package:vegetarian/blocs/profile_menu_blocs.dart';
 import 'package:vegetarian/blocs/recipe_blocs.dart';
+import 'package:vegetarian/blocs/search_bloc.dart';
+import 'package:vegetarian/blocs/upload_video_bloc.dart';
 import 'package:vegetarian/blocs/user_blogs_bloc.dart';
 import 'package:vegetarian/blocs/user_recipes_bloc.dart';
 import 'package:vegetarian/blocs/user_videos_bloc.dart';
+import 'package:vegetarian/blocs/video_bloc.dart';
 import 'package:vegetarian/blocs/weekly_menu_bloc.dart';
 import 'package:vegetarian/constants/constants.dart';
 import 'package:vegetarian/events/all_blogs_event.dart';
@@ -49,6 +59,8 @@ import 'package:vegetarian/events/all_video_bloc.dart';
 import 'package:vegetarian/events/allergies_event.dart';
 import 'package:vegetarian/events/blog_event.dart';
 import 'package:vegetarian/events/check_nutrition_events.dart';
+import 'package:vegetarian/events/create_recipe_events.dart';
+import 'package:vegetarian/events/draft_event.dart';
 import 'package:vegetarian/events/favorite_ingredients_event.dart';
 import 'package:vegetarian/events/home_events.dart';
 import 'package:vegetarian/events/liked_events.dart';
@@ -56,9 +68,12 @@ import 'package:vegetarian/events/login_events.dart';
 import 'package:vegetarian/events/nearby_event.dart';
 import 'package:vegetarian/events/profile_menu_events.dart';
 import 'package:vegetarian/events/recipe_event.dart';
+import 'package:vegetarian/events/search_event.dart';
+import 'package:vegetarian/events/upload_video_event.dart';
 import 'package:vegetarian/events/user_blogs_events.dart';
 import 'package:vegetarian/events/user_recipes_events.dart';
 import 'package:vegetarian/events/user_videos_event.dart';
+import 'package:vegetarian/events/video_event.dart';
 import 'package:vegetarian/events/weekly_menu_event.dart';
 import 'package:vegetarian/repositories/local_data.dart';
 import 'package:vegetarian/states/home_states.dart';
@@ -82,11 +97,21 @@ class _MyHomePageState extends State<MyHomePage> {
     'Popular recipes'
   ];
   final GlobalKey<ExpansionTileCardState> cardA = new GlobalKey();
-
+  final _searchtController = TextEditingController();
+  late HomeBloc _HomeMenuBloc;
+  @override
+  void initState() {
+    _HomeMenuBloc = BlocProvider.of(context);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: kPrimaryButtonTextColor,
+        foregroundColor: Colors.black,
         leading: SizedBox(),
         leadingWidth: 0,
         actions: <Widget>[
@@ -156,32 +181,6 @@ class _MyHomePageState extends State<MyHomePage> {
                               Container(
                                 width: MediaQuery.of(context).size.width,
                                 height:
-                                MediaQuery.of(context).size.height * 0.05,
-                                child: TextButton.icon(
-                                    style: TextButton.styleFrom(
-                                        alignment: Alignment.centerLeft),
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  BlocProvider(
-                                                    create: (context) =>
-                                                    ProfileMenuBloc()
-                                                      ..add(
-                                                          ProfileMenuFetchEvent("home",-1)),
-                                                    child: ProfileMenuScreen(),
-                                                  )));
-                                    },
-                                    icon: Icon(Icons.account_circle_outlined),
-                                    label: Text(
-                                      'Your Profile' ,
-                                      style: TextStyle(color: Colors.black),
-                                    )),
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height:
                                     MediaQuery.of(context).size.height * 0.05,
                                 child: TextButton.icon(
                                     style: TextButton.styleFrom(
@@ -193,11 +192,38 @@ class _MyHomePageState extends State<MyHomePage> {
                                               builder: (context) =>
                                                   BlocProvider(
                                                     create: (context) =>
+                                                        ProfileMenuBloc()
+                                                          ..add(
+                                                              ProfileMenuFetchEvent(
+                                                                  "home", -1)),
+                                                    child: ProfileMenuScreen(),
+                                                  )));
+                                    },
+                                    icon: Icon(Icons.account_circle_outlined),
+                                    label: Text(
+                                      'Your Profile',
+                                      style: TextStyle(color: Colors.black),
+                                    )),
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.05,
+                                child: TextButton.icon(
+                                    style: TextButton.styleFrom(
+                                        alignment: Alignment.centerLeft),
+                                    onPressed: () {
+                                      print("lay user recipe");
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  BlocProvider(
+                                                    create: (context) =>
                                                         UserRecipesBloc()
                                                           ..add(
                                                               UserRecipesFetchEvent(
-                                                                  state.user
-                                                                      .id)),
+                                                                  )),
                                                     child: UserRecipesScreen(),
                                                   )));
                                     },
@@ -245,6 +271,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     style: TextButton.styleFrom(
                                         alignment: Alignment.centerLeft),
                                     onPressed: () {
+                                      print("bam nut get user video");
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -290,6 +317,33 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ),
                                     label: Text(
                                       'Liked',
+                                      style: TextStyle(color: Colors.black),
+                                    )),
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height:
+                                MediaQuery.of(context).size.height * 0.05,
+                                child: TextButton.icon(
+                                    style: TextButton.styleFrom(
+                                        alignment: Alignment.centerLeft),
+                                    onPressed: () {
+                                      print("bam nut get user video");
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  BlocProvider(
+                                                    create: (context) =>
+                                                    DraftBloc()
+                                                      ..add(
+                                                          DraftFetchEvent()),
+                                                    child: UserDraftScreen(),
+                                                  )));
+                                    },
+                                    icon: Icon(Icons.collections_bookmark),
+                                    label: Text(
+                                      'Your Draft',
                                       style: TextStyle(color: Colors.black),
                                     )),
                               ),
@@ -358,7 +412,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             },
                           ),
                           ListTile(
-                            title: const Text('Create Weekly Menu'),
+                            title: const Text('Weekly Menu'),
                             onTap: () {
                               Navigator.push(
                                   context,
@@ -371,25 +425,25 @@ class _MyHomePageState extends State<MyHomePage> {
                                           )));
                             },
                           ),
-                          ListTile(
-                            title: const Text('Find Nearest Store/Restaurant'),
-                            onTap: () async {
-                              Position position =
-                                  await Geolocator.getCurrentPosition(
-                                      desiredAccuracy: LocationAccuracy.high);
-                              LatLng latlngPosition =
-                                  LatLng(position.latitude, position.longitude);
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => BlocProvider(
-                                            create: (context) => NearByBloc()
-                                              ..add(NearByFetchEvent(
-                                                  latlngPosition)),
-                                            child: MapScreen(),
-                                          )));
-                            },
-                          ),
+                          // ListTile(
+                          //   title: const Text('Find Nearest Store/Restaurant'),
+                          //   onTap: () async {
+                          //     Position position =
+                          //         await Geolocator.getCurrentPosition(
+                          //             desiredAccuracy: LocationAccuracy.high);
+                          //     LatLng latlngPosition =
+                          //         LatLng(position.latitude, position.longitude);
+                          //     Navigator.push(
+                          //         context,
+                          //         MaterialPageRoute(
+                          //             builder: (context) => BlocProvider(
+                          //                   create: (context) => NearByBloc()
+                          //                     ..add(NearByFetchEvent(
+                          //                         latlngPosition, 4000)),
+                          //                   child: MapScreen(),
+                          //                 )));
+                          //   },
+                          // ),
                         ],
                       ),
                     ),
@@ -406,6 +460,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     icon: Icon(Icons.account_circle_outlined,
                         color: Colors.black));
+              }
+              if (state is HomeStateInitial) {
+                return SizedBox();
               }
               return IconButton(
                   onPressed: () {
@@ -430,243 +487,752 @@ class _MyHomePageState extends State<MyHomePage> {
         iconTheme: IconThemeData(
           color: Colors.black, //change your color here
         ),
-        title: TextField(),
-        backgroundColor: Colors.white,
+        title: TextField(
+          controller: _searchtController,
+          onSubmitted: (value) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                          create: (context) =>
+                              SearchBloc()..add(SearchFetchEvent(value)),
+                          child: SearchScreen(),
+                        )));
+          },
+        ),
       ),
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(color: kPrimaryBackgroundColor),
-        child: ListView(
-          children: <Widget>[
-            BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
-              if (state is HomeStateInitial) {
-                return Center(child: CircularProgressIndicator());
-              }
-              if (state is HomeStateSuccess) {
-                final double width = MediaQuery.of(context).size.width;
-                return Container(
-                    child: CarouselSlider(
-                  options: CarouselOptions(
-                    autoPlay: true,
-                    autoPlayInterval: Duration(seconds: 3),
-                    enlargeCenterPage: false,
-                    viewportFraction: 1.0,
-                  ),
-                  items: state.Bestecipes.map((item) => GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => BlocProvider(
-                                        create: (context) => RecipeBloc()
-                                          ..add(
-                                              RecipeFetchEvent(item.recipeId,"home")),
-                                        child: RecipeScreen(),
-                                      )));
-                        },
-                        child: Container(
-                          child: Stack(
-                            children: [
-                              Container(
-                                child: Image.network(
-                                  item.recipeThumbnail,
-                                  fit: BoxFit.cover,
-                                  width: width,
-                                ),
-                              ),
-                              Container(
-                                padding:
-                                    const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.bottomCenter,
-                                    end: Alignment.topCenter,
-                                    colors: [
-                                      Colors.black.withOpacity(0.7),
-                                      Colors.black.withOpacity(0.0),
-                                    ],
-                                  ),
-                                ),
-                                height:
-                                    MediaQuery.of(context).size.height * 0.32,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+      body: GestureDetector(
+        onVerticalDragCancel: (){
+          _HomeMenuBloc.add(HomeFetchEvent());
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(color: kPrimaryBackgroundColor),
+          child: ListView(
+            children: <Widget>[
+              BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+                if (state is HomeStateInitial) {
+                  return Container(height:MediaQuery.of(context).size.height/4,child: Center(child: CircularProgressIndicator()));
+                }
+                if (state is HomeStateSuccess) {
+                  final double width = MediaQuery.of(context).size.width;
+                  return Container(
+                      margin: EdgeInsets.only(bottom: 1),
+                      child: CarouselSlider(
+                        options: CarouselOptions(
+                          autoPlay: true,
+                          autoPlayInterval: Duration(seconds: 3),
+                          enlargeCenterPage: false,
+                          viewportFraction: 1.0,
+                        ),
+                        items: state.Bestecipes.map((item) => GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => BlocProvider(
+                                              create: (context) => RecipeBloc()
+                                                ..add(RecipeFetchEvent(
+                                                    item.recipeId, "home")),
+                                              child: RecipeScreen(),
+                                            )));
+                              },
+                              child: Container(
+                                child: Stack(
                                   children: [
                                     Container(
-                                      width: width * 0.5,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Container(
-                                            width: width,
-                                            child: Text(
-                                              item.recipeTitle,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20,
-                                                  fontFamily: "Quicksand",
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          Container(
-                                            width: width,
-                                            child: Text(
-                                              item.firstName +
-                                                  ' ' +
-                                                  item.lastName,
-                                              style: TextStyle(
-                                                  fontFamily: "Quicksand",
-                                                  color: Colors.white,
-                                                  fontSize: 15),
-                                            ),
-                                          ),
-                                        ],
+                                      child: Image.network(
+                                        item.recipeThumbnail,
+                                        fit: BoxFit.cover,
+                                        width: width,
                                       ),
                                     ),
                                     Container(
-                                      width: width * 0.39,
+                                      padding: const EdgeInsets.fromLTRB(
+                                          15, 12, 15, 12),
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.bottomCenter,
+                                          end: Alignment.topCenter,
+                                          colors: [
+                                            Colors.black.withOpacity(0.7),
+                                            Colors.black.withOpacity(0.0),
+                                          ],
+                                        ),
+                                      ),
+                                      height: MediaQuery.of(context).size.height *
+                                          0.32,
                                       child: Row(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
+                                            CrossAxisAlignment.end,
                                         children: [
                                           Container(
-                                            child: Text(
-                                              item.totalLike.toString(),
-                                              style: TextStyle(
-                                                  fontFamily: "Quicksand",
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20),
+                                            width: width * 0.5,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Container(
+                                                  width: width,
+                                                  child: Text(
+                                                    item.recipeTitle,
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 20,
+                                                        fontFamily: "Quicksand",
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: width,
+                                                  child: Text(
+                                                    item.firstName +
+                                                        ' ' +
+                                                        item.lastName,
+                                                    style: TextStyle(
+                                                        fontFamily: "Quicksand",
+                                                        color: Colors.white,
+                                                        fontSize: 15),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                          IconButton(
-                                              onPressed: () {},
-                                              icon: item.isLike == true
-                                                  ? Icon(
-                                                      FontAwesomeIcons
-                                                          .solidHeart,
-                                                      color: Colors.red,
-                                                      size: 20,
-                                                    )
-                                                  : Icon(
-                                                      FontAwesomeIcons.heart,
-                                                      color: Colors.white,
-                                                    ))
+                                          Container(
+                                            width: width * 0.39,
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Container(
+                                                  child: Text(
+                                                    item.totalLike.toString(),
+                                                    style: TextStyle(
+                                                        fontFamily: "Quicksand",
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 20),
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                    onPressed: () {},
+                                                    icon: item.isLike == true
+                                                        ? Icon(
+                                                            FontAwesomeIcons
+                                                                .solidHeart,
+                                                            color: Colors.red,
+                                                            size: 20,
+                                                          )
+                                                        : Icon(
+                                                            FontAwesomeIcons
+                                                                .heart,
+                                                            color: Colors.white,
+                                                          ))
+                                              ],
+                                            ),
+                                          )
                                         ],
                                       ),
                                     )
                                   ],
                                 ),
-                              )
-                            ],
-                          ),
-                          color: kPrimaryAppBarColor,
-                        ),
-                      )).toList(),
-                ));
-              } else if (state is HomeStateUnLogged) {
-                final double width = MediaQuery.of(context).size.width;
-                return Container(
-                    child: CarouselSlider(
-                  options: CarouselOptions(
-                    autoPlay: true,
-                    autoPlayInterval: Duration(seconds: 5),
-                    enlargeCenterPage: false,
-                    viewportFraction: 1.0,
-                  ),
-                  items: state.Bestecipes.map((item) => GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => BlocProvider(
-                                        create: (context) => RecipeBloc()
-                                          ..add(
-                                              RecipeFetchEvent(item.recipeId,"home")),
-                                        child: RecipeScreen(),
-                                      )));
-                        },
-                        child: Container(
-                          child: Stack(
-                            children: [
-                              Container(
-                                child: Image.network(
-                                  item.recipeThumbnail,
-                                  fit: BoxFit.cover,
-                                  width: width,
-                                ),
+                                color: kPrimaryAppBarColor,
                               ),
-                              Container(
-                                padding:
-                                    const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.bottomCenter,
-                                    end: Alignment.topCenter,
-                                    colors: [
-                                      Colors.black.withOpacity(0.7),
-                                      // Colors.black.withOpacity(0.25),
-                                      Colors.black.withOpacity(0.0),
-                                      // Colors.black.withOpacity(0.1),
-                                      // Colors.black.withOpacity(0.0)
-                                    ],
+                            )).toList(),
+                      ));
+                } else if (state is HomeStateUnLogged) {
+                  final double width = MediaQuery.of(context).size.width;
+                  return Container(
+                      child: CarouselSlider(
+                    options: CarouselOptions(
+                      autoPlay: true,
+                      autoPlayInterval: Duration(seconds: 5),
+                      enlargeCenterPage: false,
+                      viewportFraction: 1.0,
+                    ),
+                    items: state.Bestecipes.map((item) => GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BlocProvider(
+                                          create: (context) => RecipeBloc()
+                                            ..add(RecipeFetchEvent(
+                                                item.recipeId, "home")),
+                                          child: RecipeScreen(),
+                                        )));
+                          },
+                          child: Container(
+                            child: Stack(
+                              children: [
+                                Container(
+                                  child: Image.network(
+                                    item.recipeThumbnail,
+                                    fit: BoxFit.cover,
+                                    width: width,
                                   ),
                                 ),
-                                height:
-                                    MediaQuery.of(context).size.height * 0.32,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      width: width,
-                                      child: Text(
-                                        item.recipeTitle,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                      ),
+                                Container(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                      colors: [
+                                        Colors.black.withOpacity(0.7),
+                                        // Colors.black.withOpacity(0.25),
+                                        Colors.black.withOpacity(0.0),
+                                        // Colors.black.withOpacity(0.1),
+                                        // Colors.black.withOpacity(0.0)
+                                      ],
                                     ),
-                                    Container(
-                                      width: width,
-                                      child: Text(
-                                        item.firstName + ' ' + item.lastName,
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 15),
+                                  ),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.32,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        width: width,
+                                        child: Text(
+                                          item.recipeTitle,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
+                                      Container(
+                                        width: width,
+                                        child: Text(
+                                          item.firstName + ' ' + item.lastName,
+                                          style: TextStyle(
+                                              color: Colors.white, fontSize: 15),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            color: kPrimaryAppBarColor,
                           ),
-                          color: kPrimaryAppBarColor,
-                        ),
-                      )).toList(),
-                ));
-              } else {
-                return Text('không có gì car');
-              }
-            }),
-            BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
-              if (state is HomeStateInitial) {
-                return Center(child: CircularProgressIndicator());
-              }
-              if (state is HomeStateSuccess) {
-                return Container(
-                  decoration: BoxDecoration(color: Colors.white),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                        )).toList(),
+                  ));
+                } else {
+                  return Text('không có gì car');
+                }
+              }),
+              BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+                if (state is HomeStateInitial) {
+                  return Container(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      child: Center(child: CircularProgressIndicator()));
+                }
+                if (state is HomeStateSuccess) {
+                  return Column(
                     children: [
                       Container(
-                          height: MediaQuery.of(context).size.height * 0.13,
-                          child: ListView.builder(
-                            itemCount: (state.recommends != null)
-                                ? state.recommends.length
+                        decoration: BoxDecoration(color: Colors.white),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                                height: MediaQuery.of(context).size.height * 0.155,
+                                child: ListView.builder(
+                                  itemCount: (state.recommends != null)
+                                      ? state.recommends!.listBody.length
+                                      : 0,
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) => GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => BlocProvider(
+                                                    create: (context) => RecipeBloc()
+                                                      ..add(RecipeFetchEvent(
+                                                          state.recommends!
+                                                              .listBody[index].recipeId,
+                                                          "home")),
+                                                    child: RecipeScreen(),
+                                                  )));
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.fromLTRB(0.5, 0, 0.5, 0),
+                                      width: MediaQuery.of(context).size.width * 0.4,
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            height:
+                                                MediaQuery.of(context).size.height,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: NetworkImage(state
+                                                    .recommends!.listBody[index]
+                                                    .recipeThumbnail),
+                                                fit: BoxFit.cover,
+                                              ),
+                                              border: Border.all(
+                                                color: Colors.white,
+                                                width: 0.0,
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                begin: Alignment.bottomCenter,
+                                                end: Alignment.topCenter,
+                                                colors: [
+                                                  Colors.black.withOpacity(0.7),
+                                                  Colors.black.withOpacity(0.0),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.all(12),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  state.recommends!.listBody[index].recipeTitle,
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.white,
+                                                      fontFamily: "Quicksand",
+                                                      fontSize: 14),
+                                                  overflow: TextOverflow.clip,
+                                                ),
+                                                Text(
+                                                  state.recommends!.listBody[index].firstName +
+                                                      ' ' +
+                                                      state
+                                                          .recommends!.listBody[index].lastName,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                    fontFamily: "Quicksand",
+                                                  ),
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      criteria[state.recommends!.listBody[index]
+                                                              .criteria -
+                                                          1],
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 12,
+                                                          fontFamily: "Quicksand",
+                                                          fontStyle:
+                                                              FontStyle.italic),
+                                                    )
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin:EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(margin:EdgeInsets.fromLTRB(10, 0, 10, 10),child: Text("You might like these",style: TextStyle(fontWeight: FontWeight.bold),)),
+                            Container(
+                              decoration: BoxDecoration(color: Colors.white),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                      height: MediaQuery.of(context).size.height * 0.155,
+                                      child: ListView.builder(
+                                        itemCount: (state.recommends != null)
+                                            ? state.recommends!.listSuggest.length
+                                            : 0,
+                                        scrollDirection: Axis.horizontal,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) => GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => BlocProvider(
+                                                      create: (context) => RecipeBloc()
+                                                        ..add(RecipeFetchEvent(
+                                                            state.recommends!
+                                                                .listSuggest[index].recipeId,
+                                                            "home")),
+                                                      child: RecipeScreen(),
+                                                    )));
+                                          },
+                                          child: Container(
+                                            margin: EdgeInsets.fromLTRB(0.5, 0, 0.5, 0),
+                                            width: MediaQuery.of(context).size.width * 0.4,
+                                            child: Stack(
+                                              children: [
+                                                Container(
+                                                  height:
+                                                  MediaQuery.of(context).size.height,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(state
+                                                          .recommends!.listSuggest[index]
+                                                          .recipeThumbnail),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                    border: Border.all(
+                                                      color: Colors.white,
+                                                      width: 0.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                      begin: Alignment.bottomCenter,
+                                                      end: Alignment.topCenter,
+                                                      colors: [
+                                                        Colors.black.withOpacity(0.7),
+                                                        Colors.black.withOpacity(0.0),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  padding: const EdgeInsets.all(12),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        state.recommends!.listSuggest[index].recipeTitle,
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Colors.white,
+                                                            fontFamily: "Quicksand",
+                                                            fontSize: 14),
+                                                        overflow: TextOverflow.clip,
+                                                      ),
+                                                      Text(
+                                                        state.recommends!.listSuggest[index].firstName +
+                                                            ' ' +
+                                                            state
+                                                                .recommends!.listSuggest[index].lastName,
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 12,
+                                                          fontFamily: "Quicksand",
+                                                        ),
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            criteria[state.recommends!.listSuggest[index]
+                                                                .criteria -
+                                                                1],
+                                                            style: TextStyle(
+                                                                color: Colors.white,
+                                                                fontSize: 12,
+                                                                fontFamily: "Quicksand",
+                                                                fontStyle:
+                                                                FontStyle.italic),
+                                                          )
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      )),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                } else if (state is HomeStateUnLogged) {
+                  return SizedBox();
+                }
+                return Text('không có gì car');
+              }),
+              BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+                if (state is HomeStateInitial) {
+                  return Container(
+                      height: MediaQuery.of(context).size.height / 5,
+                      child: Center(child: CircularProgressIndicator()));
+                }
+                if (state is HomeStateSuccess) {
+                  return Container(
+                    height: MediaQuery.of(context).size.height / 5.5,
+                    child: GridView.count(
+                      physics: NeverScrollableScrollPhysics(),
+                      primary: false,
+                      padding: const EdgeInsets.all(20),
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      crossAxisCount: 2,
+                      childAspectRatio: 3,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BlocProvider(
+                                          create: (context) => CreateRecipeBloc()
+                                            ..add(CreateRecipeFetchEvent()),
+                                          child: CreateRecipeScreen(),
+                                        )));
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: kPrimaryButtonColor,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(8),
+                                  topRight: Radius.circular(8),
+                                  bottomLeft: Radius.circular(8),
+                                  bottomRight: Radius.circular(8)
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 2), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            height: MediaQuery.of(context).size.height / 10,
+                            padding: const EdgeInsets.all(8),
+                            child: Center(
+                                child: const Text(
+                              "Create New Recipe",
+                              style: TextStyle(fontWeight: FontWeight.bold, color:kPrimaryButtonTextColor),
+                            )),
+
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BlocProvider(
+                                      create: (context) => UploadVideoBloc()
+                                        ..add(UploadVideoFetchEvent()),
+                                      child: UploadVideoScreen(),
+                                    )));
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: kPrimaryButtonColor,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(8),
+                                  topRight: Radius.circular(8),
+                                  bottomLeft: Radius.circular(8),
+                                  bottomRight: Radius.circular(8)
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 2), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            height: MediaQuery.of(context).size.height / 10,
+                            padding: const EdgeInsets.all(8),
+                            child: Center(
+                                child: const Text(
+                              "Upload Your Video",
+
+                              style: TextStyle(fontWeight: FontWeight.bold, color:kPrimaryButtonTextColor),
+                            )),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            Position position =
+                            await Geolocator.getCurrentPosition(
+                                desiredAccuracy: LocationAccuracy.high);
+                            LatLng latlngPosition =
+                            LatLng(position.latitude, position.longitude);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BlocProvider(
+                                      create: (context) => NearByBloc()
+                                        ..add(NearByFetchEvent(
+                                            latlngPosition, 4000, "Vegan+Restaurant","restaurant")),
+                                      child: MapScreen(),
+                                    )));
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: kPrimaryButtonColor,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(8),
+                                  topRight: Radius.circular(8),
+                                  bottomLeft: Radius.circular(8),
+                                  bottomRight: Radius.circular(8)
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 2), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            height: MediaQuery.of(context).size.height / 10,
+                            padding: const EdgeInsets.all(8),
+                            child: Center(
+                                child: const Text(
+                                  "Nearby Restaurant",
+                                  style: TextStyle(fontWeight: FontWeight.bold, color:kPrimaryButtonTextColor),
+                                )),
+
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            Position position =
+                            await Geolocator.getCurrentPosition(
+                                desiredAccuracy: LocationAccuracy.high);
+                            LatLng latlngPosition =
+                            LatLng(position.latitude, position.longitude);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BlocProvider(
+                                      create: (context) => NearByBloc()
+                                        ..add(NearByFetchEvent(
+                                            latlngPosition, 4000, "siêu+thị+đồ+chay","store")),
+                                      child: MapScreen(),
+                                    )));
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: kPrimaryButtonColor,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(8),
+                                  topRight: Radius.circular(8),
+                                  bottomLeft: Radius.circular(8),
+                                  bottomRight: Radius.circular(8)
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 2), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            height: MediaQuery.of(context).size.height / 10,
+                            padding: const EdgeInsets.all(8),
+                            child: Center(
+                                child: const Text(
+                                  "Nearby Store",
+                                  style: TextStyle(fontWeight: FontWeight.bold, color:kPrimaryButtonTextColor),
+                                )),
+
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (state is HomeStateUnLogged) {
+                  return SizedBox();
+                }
+                return Text('không có gì car');
+              }),
+              Container(
+                margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                height: MediaQuery.of(context).size.height * 0.26,
+                decoration: BoxDecoration(color: Colors.white),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                          child: Text(
+                            'Lastest Recipes',
+                            style: TextStyle(
+                                color: Colors.black45,
+                                fontFamily: "Quicksand",
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Spacer(),
+                        Container(
+                            height: 30,
+                            child: TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => BlocProvider(
+                                                create: (context) =>
+                                                    AllRecipesBloc()
+                                                      ..add(
+                                                          AllRecipesFetchEvent()),
+                                                child: AllRecipesScreen(),
+                                              )));
+                                },
+                                child: Text(
+                                  'See All',
+                                  style: TextStyle(
+                                      fontFamily: "Quicksand",
+                                      fontWeight: FontWeight.bold),
+                                )))
+                      ],
+                    ),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                      height: MediaQuery.of(context).size.height * 0.20,
+                      child: BlocBuilder<HomeBloc, HomeState>(
+                          builder: (context, state) {
+                        if (state is HomeStateInitial) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        if (state is HomeStateSuccess) {
+                          return ListView.builder(
+                            itemCount: (state.recipes != null)
+                                ? state.recipes.length
                                 : 0,
                             scrollDirection: Axis.horizontal,
                             shrinkWrap: true,
@@ -677,909 +1243,771 @@ class _MyHomePageState extends State<MyHomePage> {
                                     MaterialPageRoute(
                                         builder: (context) => BlocProvider(
                                               create: (context) => RecipeBloc()
-                                                ..add(RecipeFetchEvent(state
-                                                    .recommends[index]
-                                                    .recipeId,"home")),
+                                                ..add(RecipeFetchEvent(
+                                                    state.recipes[index].recipeId,
+                                                    "home")),
                                               child: RecipeScreen(),
                                             )));
                               },
                               child: Container(
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      height:
-                                          MediaQuery.of(context).size.height,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(state
-                                              .recommends[index]
-                                              .recipeThumbnail),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 0.0,
-                                        ),
+                                // height: MediaQuery.of(context).size.height * 0.5,
+                                width: MediaQuery.of(context).size.width * 0.26,
+                                margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                // decoration: BoxDecoration(border: Border.all(color: kPrimaryBoderColor)),
+                                child: Stack(children: [
+                                  Container(
+                                    height: MediaQuery.of(context).size.height,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                            state.recipes[index].recipeThumbnail),
+                                        fit: BoxFit.cover,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 0.0,
                                       ),
                                     ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.bottomCenter,
-                                          end: Alignment.topCenter,
-                                          colors: [
-                                            Colors.black.withOpacity(0.7),
-                                            Colors.black.withOpacity(0.0),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.topCenter,
+                                        colors: [
+                                          Colors.black.withOpacity(0.7),
+                                          // Colors.black.withOpacity(0.25),
+                                          Colors.black.withOpacity(0.0),
+                                          // Colors.black.withOpacity(0.1),
+                                          // Colors.black.withOpacity(0.0)
+                                        ],
+                                      ),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                    ),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 6, 10, 10),
+                                        width: MediaQuery.of(context).size.width,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.2,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              state.recipes[index].recipeTitle,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                  fontSize: 12),
+                                              overflow: TextOverflow.clip,
+                                            ),
+                                            Text(
+                                              state.recipes[index].firstName +
+                                                  ' ' +
+                                                  state.recipes[index].lastName,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                  fontStyle: FontStyle.italic),
+                                            ),
+                                            Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.02,
+                                              alignment: Alignment.bottomLeft,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.2,
+                                              margin:
+                                                  EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.05,
+                                                    child: IconButton(
+                                                        alignment:
+                                                            Alignment.bottomLeft,
+                                                        padding: EdgeInsets.zero,
+                                                        onPressed: () {},
+                                                        icon: state.recipes[index]
+                                                                    .isLike ==
+                                                                true
+                                                            ? Icon(
+                                                                FontAwesomeIcons
+                                                                    .solidHeart,
+                                                                color: Colors.red,
+                                                                size: 15,
+                                                              )
+                                                            : Icon(
+                                                                FontAwesomeIcons
+                                                                    .heart,
+                                                                color:
+                                                                    Colors.white,
+                                                                size: 15,
+                                                              )),
+                                                  ),
+                                                  Text(
+                                                    state.recipes[index].totalLike
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontFamily: "Quicksand"),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
                                           ],
                                         ),
                                       ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          15, 0, 5, 5),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            state.recommends[index].recipeTitle,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                                fontFamily: "Quicksand",
-                                                fontSize: 12),
-                                            overflow: TextOverflow.clip,
-                                          ),
-                                          Text(
-                                            state.recommends[index].firstName +
-                                                ' ' +
-                                                state
-                                                    .recommends[index].lastName,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                              fontFamily: "Quicksand",
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                criteria[state.recommends[index]
-                                                        .criteria -
-                                                    1],
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12,
-                                                    fontFamily: "Quicksand",
-                                                    fontStyle:
-                                                        FontStyle.italic),
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                    ],
+                                  ),
+                                ]),
                               ),
                             ),
-                          )),
-                    ],
-                  ),
-                );
-              } else if (state is HomeStateUnLogged) {
-                return SizedBox();
-              }
-              return Text('không có gì car');
-            }),
-            Container(
-              margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
-              padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-              height: MediaQuery.of(context).size.height * 0.29,
-              decoration: BoxDecoration(color: Colors.white),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                        child: Text(
-                          'Lastest Recipes',
-                          style: TextStyle(
-                              color: Colors.black45,
-                              fontFamily: "Quicksand",
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Spacer(),
-                      Container(
-                          height: 30,
-                          child: TextButton(
-                              onPressed: () {
+                          );
+                        } else if (state is HomeStateUnLogged) {
+                          return ListView.builder(
+                            itemCount: (state.recipes != null)
+                                ? state.recipes.length
+                                : 0,
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) => GestureDetector(
+                              onTap: () async {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => BlocProvider(
-                                              create: (context) =>
-                                                  AllRecipesBloc()
-                                                    ..add(
-                                                        AllRecipesFetchEvent()),
-                                              child: AllRecipesScreen(),
+                                              create: (context) => RecipeBloc()
+                                                ..add(RecipeFetchEvent(
+                                                    state.recipes[index].recipeId,
+                                                    "home")),
+                                              child: RecipeScreen(),
                                             )));
                               },
-                              child: Text(
-                                'See All',
-                                style: TextStyle(
-                                    fontFamily: "Quicksand",
-                                    fontWeight: FontWeight.bold),
-                              )))
-                    ],
-                  ),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                    height: MediaQuery.of(context).size.height * 0.23,
-                    child: BlocBuilder<HomeBloc, HomeState>(
-                        builder: (context, state) {
-                      if (state is HomeStateInitial) {
-                        return Center(child: CircularProgressIndicator());
-                      }
-                      if (state is HomeStateSuccess) {
-                        return ListView.builder(
-                          itemCount: (state.recipes != null)
-                              ? state.recipes.length
-                              : 0,
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) => GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => BlocProvider(
-                                            create: (context) => RecipeBloc()
-                                              ..add(RecipeFetchEvent(state
-                                                  .recipes[index].recipeId,"home")),
-                                            child: RecipeScreen(),
-                                          )));
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height * 0.5,
-                              width: MediaQuery.of(context).size.width * 0.26,
-                              margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                              // decoration: BoxDecoration(border: Border.all(color: kPrimaryBoderColor)),
-                              child: Stack(children: [
-                                Container(
-                                  height: MediaQuery.of(context).size.height,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          state.recipes[index].recipeThumbnail),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 0.0,
+                              child: Container(
+                                height: MediaQuery.of(context).size.height * 0.5,
+                                width: MediaQuery.of(context).size.width * 0.26,
+                                margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                // decoration: BoxDecoration(border: Border.all(color: kPrimaryBoderColor)),
+                                child: Stack(children: [
+                                  Container(
+                                    height: MediaQuery.of(context).size.height,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                            state.recipes[index].recipeThumbnail),
+                                        fit: BoxFit.cover,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 0.0,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.bottomCenter,
-                                      end: Alignment.topCenter,
-                                      colors: [
-                                        Colors.black.withOpacity(0.7),
-                                        // Colors.black.withOpacity(0.25),
-                                        Colors.black.withOpacity(0.0),
-                                        // Colors.black.withOpacity(0.1),
-                                        // Colors.black.withOpacity(0.0)
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.topCenter,
+                                        colors: [
+                                          Colors.black.withOpacity(0.7),
+                                          // Colors.black.withOpacity(0.25),
+                                          Colors.black.withOpacity(0.0),
+                                          // Colors.black.withOpacity(0.1),
+                                          // Colors.black.withOpacity(0.0)
+                                        ],
+                                      ),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                    ),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 6, 10, 10),
+                                        width: MediaQuery.of(context).size.width,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.2,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              state.recipes[index].recipeTitle,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                  fontSize: 12),
+                                              overflow: TextOverflow.clip,
+                                            ),
+                                            Text(
+                                              state.recipes[index].firstName +
+                                                  ' ' +
+                                                  state.recipes[index].lastName,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                  fontStyle: FontStyle.italic),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ]),
+                              ),
+                            ),
+                          );
+                        }
+                        return Text('không có gì car');
+                      }),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                height: MediaQuery.of(context).size.height * 0.4,
+                decoration: BoxDecoration(color: Colors.white),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                          child: Text(
+                            'Lastest Videos',
+                            style: TextStyle(
+                              color: Colors.black45,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Quicksand",
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                        Container(
+                            height: 40,
+                            child: TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => BlocProvider(
+                                                create: (context) =>
+                                                    AllVideosBloc()
+                                                      ..add(
+                                                          AllVideosFetchEvent()),
+                                                child: AllVideosScreen(),
+                                              )));
+                                },
+                                child: Text(
+                                  'See All',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                )))
+                      ],
+                    ),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      child: BlocBuilder<HomeBloc, HomeState>(
+                          builder: (context, state) {
+                        if (state is HomeStateInitial) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        if (state is HomeStateSuccess) {
+                          return GridView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              primary: true,
+                              gridDelegate:
+                                  const SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent: 200,
+                                      childAspectRatio: 3 / 2,
+                                      crossAxisSpacing: 5,
+                                      mainAxisSpacing: 5),
+                              itemCount: state.videos.listResult.length,
+                              itemBuilder: (BuildContext ctx, index) {
+                                return GestureDetector(
+                                  onTap:(){
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => BlocProvider(
+                                              create: (context) => VideoBloc()
+                                                ..add(VideoFetchEvent(state.videos.listResult[index].id, "home")),
+                                              child: VideoScreen(),
+                                            )));
+                                  },
+                                  child: Container(
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          height:
+                                              MediaQuery.of(context).size.height,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: NetworkImage(state
+                                                  .videos
+                                                  .listResult[index]
+                                                  .videoThumbnail),
+                                              fit: BoxFit.cover,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.white,
+                                              width: 0.0,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.bottomCenter,
+                                              end: Alignment.topCenter,
+                                              colors: [
+                                                Colors.black.withOpacity(0.7),
+                                                // Colors.black.withOpacity(0.25),
+                                                Colors.black.withOpacity(0.0),
+                                                // Colors.black.withOpacity(0.1),
+                                                // Colors.black.withOpacity(0.0)
+                                              ],
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Icon(
+                                              FontAwesomeIcons.play,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.fromLTRB(
+                                                  10, 6, 10, 10),
+                                              width:
+                                                  MediaQuery.of(context).size.width,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    state.videos.listResult[index]
+                                                        .videoTitle,
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors.white,
+                                                        fontSize: 12),
+                                                    overflow: TextOverflow.clip,
+                                                  ),
+                                                  Text(
+                                                    state.videos.listResult[index]
+                                                            .firstName +
+                                                        ' ' +
+                                                        state
+                                                            .videos
+                                                            .listResult[index]
+                                                            .lastName,
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                        fontStyle:
+                                                            FontStyle.italic),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15)),
                                   ),
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 6, 10, 10),
-                                      width: MediaQuery.of(context).size.width,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.2,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                );
+                              });
+                        } else if (state is HomeStateUnLogged) {
+                          return GridView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              primary: true,
+                              gridDelegate:
+                                  const SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent: 200,
+                                      childAspectRatio: 3 / 2,
+                                      crossAxisSpacing: 5,
+                                      mainAxisSpacing: 5),
+                              itemCount: state.videos.listResult.length,
+                              itemBuilder: (BuildContext ctx, index) {
+                                return Container(
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: NetworkImage(state
+                                                .videos
+                                                .listResult[index]
+                                                .videoThumbnail),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 0.0,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            begin: Alignment.bottomCenter,
+                                            end: Alignment.topCenter,
+                                            colors: [
+                                              Colors.black.withOpacity(0.7),
+                                              // Colors.black.withOpacity(0.25),
+                                              Colors.black.withOpacity(0.0),
+                                              // Colors.black.withOpacity(0.1),
+                                              // Colors.black.withOpacity(0.0)
+                                            ],
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Icon(
+                                            FontAwesomeIcons.play,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
-                                          Text(
-                                            state.recipes[index].recipeTitle,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                                fontSize: 12),
-                                            overflow: TextOverflow.clip,
-                                          ),
-                                          Text(
-                                            state.recipes[index].firstName +
-                                                ' ' +
-                                                state.recipes[index].lastName,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                                fontStyle: FontStyle.italic),
-                                          ),
                                           Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.02,
-                                            alignment: Alignment.bottomLeft,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.2,
-                                            margin:
-                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Row(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                10, 6, 10, 10),
+                                            width:
+                                                MediaQuery.of(context).size.width,
+                                            child: Column(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                  MainAxisAlignment.end,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Container(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.05,
-                                                  child: IconButton(
-                                                      alignment:
-                                                          Alignment.bottomLeft,
-                                                      padding: EdgeInsets.zero,
-                                                      onPressed: () {},
-                                                      icon: state.recipes[index]
-                                                                  .isLike ==
-                                                              true
-                                                          ? Icon(
-                                                              FontAwesomeIcons
-                                                                  .solidHeart,
-                                                              color: Colors.red,
-                                                              size: 15,
-                                                            )
-                                                          : Icon(
-                                                              FontAwesomeIcons
-                                                                  .heart,
-                                                              color:
-                                                                  Colors.white,
-                                                              size: 15,
-                                                            )),
+                                                Text(
+                                                  state.videos.listResult[index]
+                                                      .videoTitle,
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.white,
+                                                      fontSize: 12),
+                                                  overflow: TextOverflow.clip,
                                                 ),
                                                 Text(
-                                                  state.recipes[index].totalLike
-                                                      .toString(),
+                                                  state.videos.listResult[index]
+                                                          .firstName +
+                                                      ' ' +
+                                                      state
+                                                          .videos
+                                                          .listResult[index]
+                                                          .lastName,
                                                   style: TextStyle(
                                                       color: Colors.white,
-                                                      fontFamily: "Quicksand"),
+                                                      fontSize: 12,
+                                                      fontStyle:
+                                                          FontStyle.italic),
                                                 ),
                                               ],
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ]),
-                            ),
-                          ),
-                        );
-                      } else if (state is HomeStateUnLogged) {
-                        return ListView.builder(
-                          itemCount: (state.recipes != null)
-                              ? state.recipes.length
-                              : 0,
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) => GestureDetector(
-                            onTap: () async {
-
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => BlocProvider(
-                                            create: (context) => RecipeBloc()
-                                              ..add(RecipeFetchEvent(state
-                                                  .recipes[index].recipeId,"home")),
-                                            child: RecipeScreen(),
-                                          )));
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height * 0.5,
-                              width: MediaQuery.of(context).size.width * 0.26,
-                              margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                              // decoration: BoxDecoration(border: Border.all(color: kPrimaryBoderColor)),
-                              child: Stack(children: [
-                                Container(
-                                  height: MediaQuery.of(context).size.height,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          state.recipes[index].recipeThumbnail),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 0.0,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.bottomCenter,
-                                      end: Alignment.topCenter,
-                                      colors: [
-                                        Colors.black.withOpacity(0.7),
-                                        // Colors.black.withOpacity(0.25),
-                                        Colors.black.withOpacity(0.0),
-                                        // Colors.black.withOpacity(0.1),
-                                        // Colors.black.withOpacity(0.0)
-                                      ],
-                                    ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 6, 10, 10),
-                                      width: MediaQuery.of(context).size.width,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.2,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            state.recipes[index].recipeTitle,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                                fontSize: 12),
-                                            overflow: TextOverflow.clip,
-                                          ),
-                                          Text(
-                                            state.recipes[index].firstName +
-                                                ' ' +
-                                                state.recipes[index].lastName,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                                fontStyle: FontStyle.italic),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ]),
-                            ),
-                          ),
-                        );
-                      }
-                      return Text('không có gì car');
-                    }),
-                  ),
-                ],
+                                    ],
+                                  ),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15)),
+                                );
+                              });
+                        }
+                        return Text('không có gì car');
+                      }),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Container(
-              margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
-              padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-              height: MediaQuery.of(context).size.height * 0.4,
-              decoration: BoxDecoration(color: Colors.white),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                        child: Text(
-                          'Lastest Videos',
-                          style: TextStyle(
-                            color: Colors.black45,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "Quicksand",
+              Container(
+                decoration: BoxDecoration(color: Colors.white),
+                padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                          child: Text(
+                            'Lastest Blogs',
+                            style: TextStyle(
+                                color: Colors.black45,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
-                      ),
-                      Spacer(),
-                      Container(
-                          height: 50,
-                          child: TextButton(
-                              onPressed: () {
+                        Spacer(),
+                        Container(
+                            height: 30,
+                            child: TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => BlocProvider(
+                                                create: (context) =>
+                                                    AllBlogsBloc()
+                                                      ..add(AllBlogsFetchEvent()),
+                                                child: AllBlogsScreen(),
+                                              )));
+                                },
+                                child: Text('See All')))
+                      ],
+                    ),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                      child: BlocBuilder<HomeBloc, HomeState>(
+                          builder: (context, state) {
+                        if (state is HomeStateInitial) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        if (state is HomeStateSuccess) {
+                          timeago.setLocaleMessages('en', timeago.EnMessages());
+                          return ListView.separated(
+                            physics: ClampingScrollPhysics(),
+                            itemCount:
+                                (state.blogs != null) ? state.blogs.length : 0,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) => GestureDetector(
+                              onTap: () {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => BlocProvider(
-                                              create: (context) =>
-                                                  AllVideosBloc()
-                                                    ..add(
-                                                        AllVideosFetchEvent()),
-                                              child: AllVideosScreen(),
+                                              create: (context) => BlogBloc()
+                                                ..add(BlogFetchEvent(
+                                                    state.blogs[index].blogId,"home")),
+                                              child: BlogScreen(),
                                             )));
                               },
-                              child: Text('See All')))
-                    ],
-                  ),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                    height: MediaQuery.of(context).size.height * 0.3,
-                    child: BlocBuilder<HomeBloc, HomeState>(
-                        builder: (context, state) {
-                      if (state is HomeStateInitial) {
-                        return Center(child: CircularProgressIndicator());
-                      }
-                      if (state is HomeStateSuccess) {
-                        return GridView.builder(
-                            primary: true,
-                            gridDelegate:
-                                const SliverGridDelegateWithMaxCrossAxisExtent(
-                                    maxCrossAxisExtent: 200,
-                                    childAspectRatio: 3 / 2,
-                                    crossAxisSpacing: 5,
-                                    mainAxisSpacing: 5),
-                            itemCount: state.videos.listResult.length,
-                            itemBuilder: (BuildContext ctx, index) {
-                              return Container(
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      height:
-                                          MediaQuery.of(context).size.height,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(state
-                                              .videos
-                                              .listResult[index]
-                                              .videoThumbnail),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 0.0,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.bottomCenter,
-                                          end: Alignment.topCenter,
-                                          colors: [
-                                            Colors.black.withOpacity(0.7),
-                                            // Colors.black.withOpacity(0.25),
-                                            Colors.black.withOpacity(0.0),
-                                            // Colors.black.withOpacity(0.1),
-                                            // Colors.black.withOpacity(0.0)
-                                          ],
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                      ),
-                                    ),
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              10, 6, 10, 10),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                state.videos.listResult[index]
-                                                    .videoTitle,
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
-                                                    fontSize: 12),
-                                                overflow: TextOverflow.clip,
-                                              ),
-                                              Text(
-                                                state.videos.listResult[index]
-                                                        .firstName +
-                                                    ' ' +
-                                                    state
-                                                        .videos
-                                                        .listResult[index]
-                                                        .lastName,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12,
-                                                    fontStyle:
-                                                        FontStyle.italic),
-                                              ),
-                                            ],
+                              child: Container(
+                                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: 131.0,
+                                        height: 100.0,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                                state.blogs[index].blogThumbnail),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          border: Border.all(
+                                            color: Colors.white,
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15)),
-                              );
-                            });
-                      } else if (state is HomeStateUnLogged) {
-                        return GridView.builder(
-                            primary: true,
-                            gridDelegate:
-                            const SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: 200,
-                                childAspectRatio: 3 / 2,
-                                crossAxisSpacing: 5,
-                                mainAxisSpacing: 5),
-                            itemCount: state.videos.listResult.length,
-                            itemBuilder: (BuildContext ctx, index) {
-                              return Container(
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      height:
-                                      MediaQuery.of(context).size.height,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(state
-                                              .videos
-                                              .listResult[index]
-                                              .videoThumbnail),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        borderRadius:
-                                        BorderRadius.circular(10.0),
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 0.0,
-                                        ),
                                       ),
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.bottomCenter,
-                                          end: Alignment.topCenter,
-                                          colors: [
-                                            Colors.black.withOpacity(0.7),
-                                            // Colors.black.withOpacity(0.25),
-                                            Colors.black.withOpacity(0.0),
-                                            // Colors.black.withOpacity(0.1),
-                                            // Colors.black.withOpacity(0.0)
-                                          ],
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                      ),
-                                    ),
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              10, 6, 10, 10),
-                                          width:
-                                          MediaQuery.of(context).size.width,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                state.videos.listResult[index]
-                                                    .videoTitle,
+                                      Container(
+                                        width: MediaQuery.of(context).size.width *
+                                            0.58,
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 0, 0, 0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(state.blogs[index].blogTitle,
                                                 style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
-                                                    fontSize: 12),
-                                                overflow: TextOverflow.clip,
-                                              ),
-                                              Text(
-                                                state.videos.listResult[index]
-                                                    .firstName +
-                                                    ' ' +
-                                                    state
-                                                        .videos
-                                                        .listResult[index]
-                                                        .lastName,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12,
-                                                    fontStyle:
-                                                    FontStyle.italic),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15)),
-                              );
-                            });
-                      }
-                      return Text('không có gì car');
-                    }),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(color: Colors.white),
-              padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                        child: Text(
-                          'Lastest Blogs',
-                          style: TextStyle(
-                              color: Colors.black45,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Spacer(),
-                      Container(
-                          height: 30,
-                          child: TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => BlocProvider(
-                                              create: (context) =>
-                                                  AllBlogsBloc()
-                                                    ..add(AllBlogsFetchEvent()),
-                                              child: AllBlogsScreen(),
-                                            )));
-                              },
-                              child: Text('See All')))
-                    ],
-                  ),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                    child: BlocBuilder<HomeBloc, HomeState>(
-                        builder: (context, state) {
-                      if (state is HomeStateInitial) {
-                        return Center(child: CircularProgressIndicator());
-                      }
-                      if (state is HomeStateSuccess) {
-                        timeago.setLocaleMessages('en', timeago.EnMessages());
-                        return ListView.separated(
-                          physics: ClampingScrollPhysics(),
-                          itemCount:
-                              (state.blogs != null) ? state.blogs.length : 0,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) => GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => BlocProvider(
-                                            create: (context) => BlogBloc()
-                                              ..add(BlogFetchEvent(
-                                                  state.blogs[index].blogId)),
-                                            child: BlogScreen(),
-                                          )));
-                            },
-                            child: Container(
-                                margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 131.0,
-                                      height: 100.0,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                              state.blogs[index].blogThumbnail),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        border: Border.all(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.58,
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 0, 0, 0),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(state.blogs[index].blogTitle,
-                                              style: TextStyle(
-                                                  fontSize: 17,
-                                                  fontFamily: "Quicksand",
-                                                  fontWeight: FontWeight.bold),
-                                              overflow: TextOverflow.fade),
-                                          Text(
-                                            state.blogs[index].firstName +
-                                                ' ' +
-                                                state.blogs[index].lastName,
-                                            style: TextStyle(fontSize: 12),
-                                          ),
-                                          Text(
-                                            DateTime.now()
-                                                        .difference(state
-                                                            .blogs[index]
-                                                            .timeCreated)
-                                                        .inDays <
-                                                    1
-                                                ? timeago.format(
-                                                    state.blogs[index]
-                                                        .timeCreated,
-                                                    locale: 'en')
-                                                : DateFormat('dd-MM-yyyy')
-                                                    .format(state.blogs[index]
-                                                        .timeCreated),
-                                            // state.blogs[index].timeCreated,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Container(
-                                                child: Text(
-                                                  state.blogs[index].totalLike
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                      fontFamily: "Quicksand",
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 15),
+                                                    fontSize: 15,
+                                                    fontFamily: "Quicksand",
+                                                    fontWeight: FontWeight.bold),
+                                                overflow: TextOverflow.fade),
+                                            Text(
+                                              state.blogs[index].blogSubtitle,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                            Text(
+                                              state.blogs[index].firstName +
+                                                  ' ' +
+                                                  state.blogs[index].lastName,
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                            Text(
+                                              DateTime.now()
+                                                          .difference(state
+                                                              .blogs[index]
+                                                              .timeCreated)
+                                                          .inDays <
+                                                      1
+                                                  ? timeago.format(
+                                                      state.blogs[index]
+                                                          .timeCreated,
+                                                      locale: 'en')
+                                                  : DateFormat('dd-MM-yyyy')
+                                                      .format(state.blogs[index]
+                                                          .timeCreated),
+                                              // state.blogs[index].timeCreated,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Container(
+                                                  child: Text(
+                                                    state.blogs[index].totalLike
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        fontFamily: "Quicksand",
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 15),
+                                                  ),
                                                 ),
-                                              ),
-                                              IconButton(
-                                                  onPressed: () {},
-                                                  icon: state.blogs[index]
-                                                              .isLike ==
-                                                          true
-                                                      ? Icon(
-                                                          FontAwesomeIcons
-                                                              .solidHeart,
-                                                          color: Colors.red,
-                                                          size: 15,
-                                                        )
-                                                      : Icon(
-                                                          FontAwesomeIcons
-                                                              .heart,
-                                                          color: Colors.black,
-                                                          size: 15,
-                                                        ))
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                          ),
-                          separatorBuilder: (BuildContext context, int index) =>
-                              const Divider(),
-                        );
-                      } else if (state is HomeStateUnLogged) {
-                        return ListView.builder(
-                          physics: ClampingScrollPhysics(),
-                          itemCount:
-                              (state.blogs != null) ? state.blogs.length : 0,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) => GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => BlocProvider(
-                                            create: (context) => BlogBloc()
-                                              ..add(BlogFetchEvent(
-                                                  state.blogs[index].blogId)),
-                                            child: BlogScreen(),
-                                          )));
-                            },
-                            child: Container(
-                                margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                decoration: BoxDecoration(
-                                    border:
-                                        Border.all(color: kPrimaryBoderColor)),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 139.0,
-                                      height: 100.0,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                              state.blogs[index].blogThumbnail),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 5.0,
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                state.blogs[index].isLike == true
+                                                    ? Icon(
+                                                        FontAwesomeIcons
+                                                            .solidHeart,
+                                                        color: Colors.red,
+                                                        size: 15,
+                                                      )
+                                                    : Icon(
+                                                        FontAwesomeIcons.heart,
+                                                        color: Colors.black,
+                                                        size: 15,
+                                                      )
+                                              ],
+                                            )
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.58,
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 0, 0, 0),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(state.blogs[index].blogTitle,
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold),
-                                              overflow: TextOverflow.fade),
-                                          Text(
-                                            state.blogs[index].firstName +
-                                                ' ' +
-                                                state.blogs[index].lastName,
-                                            style: TextStyle(fontSize: 15),
+                                    ],
+                                  )),
+                            ),
+                            separatorBuilder: (BuildContext context, int index) =>
+                                const Divider(),
+                          );
+                        } else if (state is HomeStateUnLogged) {
+                          return ListView.builder(
+                            physics: ClampingScrollPhysics(),
+                            itemCount:
+                                (state.blogs != null) ? state.blogs.length : 0,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) => GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => BlocProvider(
+                                              create: (context) => BlogBloc()
+                                                ..add(BlogFetchEvent(
+                                                    state.blogs[index].blogId,"home")),
+                                              child: BlogScreen(),
+                                            )));
+                              },
+                              child: Container(
+                                  margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                  decoration: BoxDecoration(
+                                      border:
+                                          Border.all(color: kPrimaryBoderColor)),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 139.0,
+                                        height: 100.0,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                                state.blogs[index].blogThumbnail),
+                                            fit: BoxFit.cover,
                                           ),
-                                        ],
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 5.0,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                )),
-                          ),
-                        );
-                      }
-                      return Text('không có gì car');
-                    }),
-                  ),
-                ],
+                                      Container(
+                                        width: MediaQuery.of(context).size.width *
+                                            0.58,
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 0, 0, 0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(state.blogs[index].blogTitle,
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold),
+                                                overflow: TextOverflow.fade),
+                                            Text(
+                                              state.blogs[index].firstName +
+                                                  ' ' +
+                                                  state.blogs[index].lastName,
+                                              style: TextStyle(fontSize: 15),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                          );
+                        }
+                        return Text('không có gì car');
+                      }),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       // This trailing comma makes auto-formatting nicer for build methods.

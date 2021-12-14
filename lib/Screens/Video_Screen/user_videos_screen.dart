@@ -1,26 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vegetarian/Screens/MainScreen/main_screen.dart';
-import 'package:vegetarian/Screens/Recipes/create_recipe_screen.dart';
-import 'package:vegetarian/Screens/Recipes/recipe_screen.dart';
-import 'package:vegetarian/Screens/UserProfile/profile_menu_screen.dart';
 import 'package:vegetarian/Screens/Video_Screen/create_video_screen.dart';
-import 'package:vegetarian/blocs/create_recipe_bloc.dart';
+import 'package:vegetarian/Screens/Video_Screen/video_screen.dart';
 import 'package:vegetarian/blocs/home_blocs.dart';
-import 'package:vegetarian/blocs/profile_menu_blocs.dart';
-import 'package:vegetarian/blocs/recipe_blocs.dart';
 import 'package:vegetarian/blocs/upload_video_bloc.dart';
-import 'package:vegetarian/blocs/user_recipes_bloc.dart';
 import 'package:vegetarian/blocs/user_videos_bloc.dart';
+import 'package:vegetarian/blocs/video_bloc.dart';
 import 'package:vegetarian/constants/constants.dart';
-import 'package:vegetarian/events/create_recipe_events.dart';
 import 'package:vegetarian/events/home_events.dart';
-import 'package:vegetarian/events/profile_menu_events.dart';
-import 'package:vegetarian/events/recipe_event.dart';
 import 'package:vegetarian/events/upload_video_event.dart';
-import 'package:vegetarian/events/user_recipes_events.dart';
-import 'package:vegetarian/states/user_recipes_state.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:vegetarian/events/video_event.dart';
 import 'package:vegetarian/states/user_videos_state.dart';
 
 class UserVideosScreen extends StatefulWidget {
@@ -52,7 +42,7 @@ class _UserVideosScreenState extends State<UserVideosScreen> {
             ),
           ))); },
           ),
-          title: Text('Your Recipes'),
+          title: Text('Your Videos'),
           actions: <Widget>[
             Container(
               child: IconButton(
@@ -167,7 +157,81 @@ class _UserVideosScreenState extends State<UserVideosScreen> {
                     listener: (context, state) {
                     }, builder: (context, state) {
                   if (state is UserVideosStateSuccess) {
-                    return Center(child: Text('Coming Soon'),);
+                    return ListView.builder(
+                      physics: ClampingScrollPhysics(),
+                      itemCount:
+                      (state.list != null) ? state.list.listResult.length : 0,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) => GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BlocProvider(
+                                    create: (context) => VideoBloc()
+                                      ..add(VideoFetchEvent(
+                                          state.list.listResult[index].id,"userVideo")),
+                                    child: VideoScreen(),
+                                  )));
+                        },
+                        child: Container(
+                            margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: kPrimaryBoderColor)),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 130.0,
+                                  height: 100.0,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                          state.list.listResult[index].videoThumbnail),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    border: Border.all(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width:
+                                  MediaQuery.of(context).size.width * 0.6,
+                                  padding:
+                                  const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Text(state.list.listResult[index].videoTitle,
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: kPrimaryTextColor),
+                                          overflow: TextOverflow.fade),
+                                      Text(
+                                        state.list.listResult[index].firstName +
+                                            ' ' +
+                                            state.list.listResult[index].lastName,
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            color: kPrimaryTextColor),
+                                      ),
+                                      Text(
+                                        state.list.listResult[index].status == 1 ? "Private":state.list.listResult[index].status == 2? "Aprroved":"Rejected",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            color: kPrimaryTextColor),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )),
+                      ),
+                    );
                   }
                   return Center(
                     child: Text('There is no videos, lets make some'),
