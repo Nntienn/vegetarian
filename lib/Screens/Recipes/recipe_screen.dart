@@ -844,6 +844,13 @@ class _ProfileState extends State<RecipeScreen> {
                             color: Colors.black54.withOpacity(0.3),
                             margin: EdgeInsets.only(top: 10, bottom: 10),
                           ),
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                            child: Text(
+                              "How to cook",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
                           state.recipe.steps.length != 0
                               ? ListView.builder(
                                   physics: ClampingScrollPhysics(),
@@ -855,19 +862,44 @@ class _ProfileState extends State<RecipeScreen> {
                                       child: Column(
                                         crossAxisAlignment:CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            "Step " +
-                                                (index + 1).toString() +
-                                                ": ",
-                                            style: TextStyle(
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.bold),
+                                          // Text(
+                                          //   "Step " +
+                                          //       (index + 1).toString() +
+                                          //       ": ",
+                                          //   style: TextStyle(
+                                          //       fontSize: 17,
+                                          //       fontWeight: FontWeight.bold),
+                                          // ),
+
+                                          Row(
+                                            children: [
+                                              Container(
+                                                  width: MediaQuery.of(context).size.width*0.2,
+                                                  child: Text(
+                                                    (index + 1).toString() + "/" + state.recipe.steps.length.toString(),
+                                                    style: TextStyle(
+                                                        fontSize: 15, fontWeight: FontWeight.bold),
+                                                  )),
+                                            ],
                                           ),
-                                          Text(
-                                            state.recipe.steps[index]
-                                                .stepContent,
-                                            style: TextStyle(fontSize: 15,height: 1.6),
-                                          )
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              Container(
+                                                width: MediaQuery.of(context).size.width*0.8,
+                                                child: Text(
+                                                  state.recipe.steps[index]
+                                                      .stepContent,
+                                                  style: TextStyle(fontSize: 15,height: 1.6),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          // Text(
+                                          //   state.recipe.steps[index]
+                                          //       .stepContent,
+                                          //   style: TextStyle(fontSize: 15,height: 1.6),
+                                          // )
                                         ],
                                       ),
                                     );

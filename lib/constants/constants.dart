@@ -11,6 +11,7 @@ const kPrimaryButtonTextColor = Color(0xFFeeeeee);
 const kPrimaryButtonColor2 = Color(0xFFABAC7F);
 const kPrimaryButtonColor3 = Color(0xFF373d20);
 const kPrimaryButtonColor4 = Color(0xFFfafafa);
+const kPrimaryTextColor5 = Color(0xFFc0ac00);
 const kPrimaryButtonColorPicked = Color(0xFF656665);
 
 const BASE_Url = "http://14.161.47.36:8080/hiepphat-0.0.1-SNAPSHOT/";

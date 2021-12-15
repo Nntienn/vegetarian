@@ -501,10 +501,8 @@ class _MyHomePageState extends State<MyHomePage> {
           },
         ),
       ),
-      body: GestureDetector(
-        onVerticalDragCancel: (){
-          _HomeMenuBloc.add(HomeFetchEvent());
-        },
+      body: RefreshIndicator(
+        onRefresh: () async {_HomeMenuBloc.add(HomeFetchEvent());},
         child: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
